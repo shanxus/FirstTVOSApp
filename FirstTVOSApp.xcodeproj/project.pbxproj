@@ -1,0 +1,425 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3D50EFF323EFE10600BA474C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D50EFF223EFE10600BA474C /* AppDelegate.swift */; };
+		3D50EFF523EFE10600BA474C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D50EFF423EFE10600BA474C /* ViewController.swift */; };
+		3D50EFF823EFE10600BA474C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50EFF623EFE10600BA474C /* Main.storyboard */; };
+		3D50EFFA23EFE10B00BA474C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D50EFF923EFE10B00BA474C /* Assets.xcassets */; };
+		3D50EFFD23EFE10B00BA474C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50EFFB23EFE10B00BA474C /* LaunchScreen.storyboard */; };
+		3D50F00523EFE51D00BA474C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D50F00423EFE51D00BA474C /* LocationService.swift */; };
+		3DDF969C23EFF51200B787BB /* SSH_home.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF969A23EFF3C300B787BB /* SSH_home.jpg */; };
+		3DDF969E23EFFB6D00B787BB /* bulbasuar_walking_gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF969D23EFFB6D00B787BB /* bulbasuar_walking_gif.gif */; };
+		3DDF96A023EFFC0C00B787BB /* GifImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF969F23EFFC0C00B787BB /* GifImage.swift */; };
+		3DDF96A723F02E0800B787BB /* resized_clock.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF96A623F02E0800B787BB /* resized_clock.jpg */; };
+		3DDF96AB23F0362A00B787BB /* media.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF96AA23F0362A00B787BB /* media.jpg */; };
+		3DDF96AD23F036A800B787BB /* weather.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF96AC23F036A800B787BB /* weather.jpg */; };
+		3DDF96B123F0389100B787BB /* game_play.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF96B023F0389100B787BB /* game_play.jpg */; };
+		3DDF96B523F039D200B787BB /* dji.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF96B423F039D200B787BB /* dji.jpg */; };
+		3DDF96B823F2FF2400B787BB /* GameListViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF96B723F2FF2400B787BB /* GameListViewController.storyboard */; };
+		3DDF96BA23F3F68F00B787BB /* GameListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF96B923F3F68F00B787BB /* GameListViewController.swift */; };
+		3DF9E65E23F96F4100AAA0EA /* werewolf_game.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3D6E661523F457650038F6F4 /* werewolf_game.jpg */; };
+		3DF9E66023F9714500AAA0EA /* switch_background_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */; };
+		3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */; };
+		3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3D50EFEF23EFE10600BA474C /* FirstTVOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstTVOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D50EFF223EFE10600BA474C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3D50EFF423EFE10600BA474C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3D50EFF723EFE10600BA474C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		3D50EFF923EFE10B00BA474C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3D50EFFC23EFE10B00BA474C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3D50EFFE23EFE10B00BA474C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3D50F00423EFE51D00BA474C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		3D6E661523F457650038F6F4 /* werewolf_game.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = werewolf_game.jpg; sourceTree = "<group>"; };
+		3DDF969A23EFF3C300B787BB /* SSH_home.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SSH_home.jpg; sourceTree = "<group>"; };
+		3DDF969D23EFFB6D00B787BB /* bulbasuar_walking_gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = bulbasuar_walking_gif.gif; sourceTree = "<group>"; };
+		3DDF969F23EFFC0C00B787BB /* GifImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifImage.swift; sourceTree = "<group>"; };
+		3DDF96A623F02E0800B787BB /* resized_clock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = resized_clock.jpg; sourceTree = "<group>"; };
+		3DDF96AA23F0362A00B787BB /* media.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = media.jpg; sourceTree = "<group>"; };
+		3DDF96AC23F036A800B787BB /* weather.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = weather.jpg; sourceTree = "<group>"; };
+		3DDF96B023F0389100B787BB /* game_play.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = game_play.jpg; sourceTree = "<group>"; };
+		3DDF96B423F039D200B787BB /* dji.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dji.jpg; sourceTree = "<group>"; };
+		3DDF96B723F2FF2400B787BB /* GameListViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GameListViewController.storyboard; sourceTree = "<group>"; };
+		3DDF96B923F3F68F00B787BB /* GameListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListViewController.swift; sourceTree = "<group>"; };
+		3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = switch_background_image.jpg; sourceTree = "<group>"; };
+		3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfModel.swift; sourceTree = "<group>"; };
+		3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfService.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3D50EFEC23EFE10600BA474C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3D50EFE623EFE10600BA474C = {
+			isa = PBXGroup;
+			children = (
+				3D50EFF123EFE10600BA474C /* FirstTVOSApp */,
+				3D50EFF023EFE10600BA474C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3D50EFF023EFE10600BA474C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3D50EFEF23EFE10600BA474C /* FirstTVOSApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3D50EFF123EFE10600BA474C /* FirstTVOSApp */ = {
+			isa = PBXGroup;
+			children = (
+				3DF9E66123F97AD400AAA0EA /* Werewolf */,
+				3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */,
+				3D6E661523F457650038F6F4 /* werewolf_game.jpg */,
+				3DDF96B623F2FEE200B787BB /* Home */,
+				3DDF96A323F02A6F00B787BB /* HomeItemImage */,
+				3D50EFF223EFE10600BA474C /* AppDelegate.swift */,
+				3D50EFF923EFE10B00BA474C /* Assets.xcassets */,
+				3D50EFFB23EFE10B00BA474C /* LaunchScreen.storyboard */,
+				3D50EFFE23EFE10B00BA474C /* Info.plist */,
+				3D50F00423EFE51D00BA474C /* LocationService.swift */,
+				3DDF969F23EFFC0C00B787BB /* GifImage.swift */,
+				3DDF96B723F2FF2400B787BB /* GameListViewController.storyboard */,
+				3DDF96B923F3F68F00B787BB /* GameListViewController.swift */,
+			);
+			path = FirstTVOSApp;
+			sourceTree = "<group>";
+		};
+		3DDF96A323F02A6F00B787BB /* HomeItemImage */ = {
+			isa = PBXGroup;
+			children = (
+				3DDF96B423F039D200B787BB /* dji.jpg */,
+				3DDF96B023F0389100B787BB /* game_play.jpg */,
+				3DDF96AC23F036A800B787BB /* weather.jpg */,
+				3DDF96AA23F0362A00B787BB /* media.jpg */,
+				3DDF96A623F02E0800B787BB /* resized_clock.jpg */,
+			);
+			path = HomeItemImage;
+			sourceTree = "<group>";
+		};
+		3DDF96B623F2FEE200B787BB /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				3DDF969D23EFFB6D00B787BB /* bulbasuar_walking_gif.gif */,
+				3DDF969A23EFF3C300B787BB /* SSH_home.jpg */,
+				3D50EFF423EFE10600BA474C /* ViewController.swift */,
+				3D50EFF623EFE10600BA474C /* Main.storyboard */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		3DF9E66123F97AD400AAA0EA /* Werewolf */ = {
+			isa = PBXGroup;
+			children = (
+				3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */,
+				3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */,
+			);
+			path = Werewolf;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3D50EFEE23EFE10600BA474C /* FirstTVOSApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D50F00123EFE10B00BA474C /* Build configuration list for PBXNativeTarget "FirstTVOSApp" */;
+			buildPhases = (
+				3D50EFEB23EFE10600BA474C /* Sources */,
+				3D50EFEC23EFE10600BA474C /* Frameworks */,
+				3D50EFED23EFE10600BA474C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FirstTVOSApp;
+			productName = FirstTVOSApp;
+			productReference = 3D50EFEF23EFE10600BA474C /* FirstTVOSApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3D50EFE723EFE10600BA474C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1130;
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = ShanOvO;
+				TargetAttributes = {
+					3D50EFEE23EFE10600BA474C = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 3D50EFEA23EFE10600BA474C /* Build configuration list for PBXProject "FirstTVOSApp" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3D50EFE623EFE10600BA474C;
+			productRefGroup = 3D50EFF023EFE10600BA474C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3D50EFEE23EFE10600BA474C /* FirstTVOSApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3D50EFED23EFE10600BA474C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DF9E66023F9714500AAA0EA /* switch_background_image.jpg in Resources */,
+				3DF9E65E23F96F4100AAA0EA /* werewolf_game.jpg in Resources */,
+				3DDF96AB23F0362A00B787BB /* media.jpg in Resources */,
+				3DDF96B123F0389100B787BB /* game_play.jpg in Resources */,
+				3DDF96AD23F036A800B787BB /* weather.jpg in Resources */,
+				3D50EFFD23EFE10B00BA474C /* LaunchScreen.storyboard in Resources */,
+				3DDF96A723F02E0800B787BB /* resized_clock.jpg in Resources */,
+				3DDF96B823F2FF2400B787BB /* GameListViewController.storyboard in Resources */,
+				3DDF969C23EFF51200B787BB /* SSH_home.jpg in Resources */,
+				3DDF969E23EFFB6D00B787BB /* bulbasuar_walking_gif.gif in Resources */,
+				3D50EFFA23EFE10B00BA474C /* Assets.xcassets in Resources */,
+				3DDF96B523F039D200B787BB /* dji.jpg in Resources */,
+				3D50EFF823EFE10600BA474C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3D50EFEB23EFE10600BA474C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D50EFF523EFE10600BA474C /* ViewController.swift in Sources */,
+				3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */,
+				3D50F00523EFE51D00BA474C /* LocationService.swift in Sources */,
+				3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */,
+				3DDF96BA23F3F68F00B787BB /* GameListViewController.swift in Sources */,
+				3DDF96A023EFFC0C00B787BB /* GifImage.swift in Sources */,
+				3D50EFF323EFE10600BA474C /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		3D50EFF623EFE10600BA474C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3D50EFF723EFE10600BA474C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3D50EFFB23EFE10B00BA474C /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3D50EFFC23EFE10B00BA474C /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3D50EFFF23EFE10B00BA474C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = appletvos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TVOS_DEPLOYMENT_TARGET = 13.2;
+			};
+			name = Debug;
+		};
+		3D50F00023EFE10B00BA474C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = appletvos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TVOS_DEPLOYMENT_TARGET = 13.2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3D50F00223EFE10B00BA474C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N3TUMP2K5W;
+				INFOPLIST_FILE = FirstTVOSApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shanOvO.FirstTVOSApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Debug;
+		};
+		3D50F00323EFE10B00BA474C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N3TUMP2K5W;
+				INFOPLIST_FILE = FirstTVOSApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shanOvO.FirstTVOSApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3D50EFEA23EFE10600BA474C /* Build configuration list for PBXProject "FirstTVOSApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D50EFFF23EFE10B00BA474C /* Debug */,
+				3D50F00023EFE10B00BA474C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3D50F00123EFE10B00BA474C /* Build configuration list for PBXNativeTarget "FirstTVOSApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D50F00223EFE10B00BA474C /* Debug */,
+				3D50F00323EFE10B00BA474C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3D50EFE723EFE10600BA474C /* Project object */;
+}
