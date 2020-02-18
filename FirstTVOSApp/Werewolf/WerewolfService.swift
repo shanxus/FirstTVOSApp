@@ -58,6 +58,8 @@ class WerewolfService: NSObject {
         characters.shuffle()
         
         self.characters = characters
+        
+        delegate?.didCreate(characters: characters)
     }
     
     private func speech(for text: String) {
