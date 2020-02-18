@@ -8,6 +8,26 @@
 
 import Foundation
 
+enum WerewolfScript: CaseIterable {
+    case everyoneClosesEyes
+    case werewolfOpensEyes
+    case werewolfDecidesVictim
+    case werewolfClosesEyes
+    
+    func getScript() -> String {
+        switch self {
+        case .everyoneClosesEyes:
+            return "天黑了，請閉眼"
+        case .werewolfOpensEyes:
+            return "狼人請睜眼，互相確認身份"
+        case .werewolfDecidesVictim:
+            return "請輸入狼人要殺的號碼"
+        case .werewolfClosesEyes:
+            return "狼人請閉眼"
+        }
+    }
+}
+
 enum WerewolfGameMode {
     case people6
     
@@ -18,10 +38,10 @@ enum WerewolfGameMode {
         }
     }
     
-    func getCharacters() -> [WerewolfTitle] {
+    func getSpecies() -> [WerewolfSpecies] {
         switch self {
         case .people6:
-            var characters = [WerewolfTitle]()
+            var characters = [WerewolfSpecies]()
             for i in 0..<2 {
                 characters.append(.villager(count: i))
                 characters.append(.werewolf(count: i))
@@ -43,7 +63,7 @@ enum WerewolfSuperpower {
     case checkTitleWithSideEffect   // for knight.
 }
 
-enum WerewolfTitle {
+enum WerewolfSpecies {
     case villager(count: Int)
     case witch
     case forecaster
@@ -77,7 +97,7 @@ enum WerewolfTitle {
         }
     }
     
-    func getSuperpower() -> [WerewolfSuperpower] {
+    func getSuperpowers() -> [WerewolfSuperpower] {
         switch self {
         case .villager(_):
             return [.none]
@@ -101,15 +121,15 @@ enum WerewolfGroup {
 }
 
 protocol WerewolfCharacteristic {
-    var title: WerewolfTitle { get set }
+    var species: WerewolfSpecies { get set }
     var group: WerewolfGroup { get set }
     var number: Int { get set }
-    var superpower: WerewolfSuperpower { get set }
+    var superpower: [WerewolfSuperpower] { get set }
 }
 
 struct WerewolfCharacter: WerewolfCharacteristic {
-    var title: WerewolfTitle
+    var species: WerewolfSpecies
     var group: WerewolfGroup
     var number: Int
-    var superpower: WerewolfSuperpower
+    var superpower: [WerewolfSuperpower]
 }

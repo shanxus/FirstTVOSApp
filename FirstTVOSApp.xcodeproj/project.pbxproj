@@ -27,6 +27,14 @@
 		3DF9E66023F9714500AAA0EA /* switch_background_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */; };
 		3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */; };
 		3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */; };
+		3DF9E66723FADB2600AAA0EA /* MPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66623FADB2500AAA0EA /* MPCService.swift */; };
+		3DF9E66F23FB771700AAA0EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */; };
+		3DF9E67123FB771700AAA0EA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */; };
+		3DF9E67323FB771700AAA0EA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67223FB771700AAA0EA /* ViewController.swift */; };
+		3DF9E67623FB771700AAA0EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67423FB771700AAA0EA /* Main.storyboard */; };
+		3DF9E67823FB771B00AAA0EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67723FB771B00AAA0EA /* Assets.xcassets */; };
+		3DF9E67B23FB771B00AAA0EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */; };
+		3DF9E68123FB790E00AAA0EA /* MPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E68023FB790E00AAA0EA /* MPCService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,10 +60,27 @@
 		3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = switch_background_image.jpg; sourceTree = "<group>"; };
 		3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfModel.swift; sourceTree = "<group>"; };
 		3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfService.swift; sourceTree = "<group>"; };
+		3DF9E66623FADB2500AAA0EA /* MPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCService.swift; sourceTree = "<group>"; };
+		3DF9E66C23FB771700AAA0EA /* TVOSMPC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TVOSMPC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		3DF9E67223FB771700AAA0EA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3DF9E67523FB771700AAA0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		3DF9E67723FB771B00AAA0EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3DF9E67A23FB771B00AAA0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3DF9E67C23FB771B00AAA0EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DF9E68023FB790E00AAA0EA /* MPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		3D50EFEC23EFE10600BA474C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DF9E66923FB771700AAA0EA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -69,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				3D50EFF123EFE10600BA474C /* FirstTVOSApp */,
+				3DF9E66D23FB771700AAA0EA /* TVOSMPC */,
 				3D50EFF023EFE10600BA474C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -77,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				3D50EFEF23EFE10600BA474C /* FirstTVOSApp.app */,
+				3DF9E66C23FB771700AAA0EA /* TVOSMPC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,6 +124,7 @@
 				3DDF969F23EFFC0C00B787BB /* GifImage.swift */,
 				3DDF96B723F2FF2400B787BB /* GameListViewController.storyboard */,
 				3DDF96B923F3F68F00B787BB /* GameListViewController.swift */,
+				3DF9E66623FADB2500AAA0EA /* MPCService.swift */,
 			);
 			path = FirstTVOSApp;
 			sourceTree = "<group>";
@@ -133,6 +161,21 @@
 			path = Werewolf;
 			sourceTree = "<group>";
 		};
+		3DF9E66D23FB771700AAA0EA /* TVOSMPC */ = {
+			isa = PBXGroup;
+			children = (
+				3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */,
+				3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */,
+				3DF9E67223FB771700AAA0EA /* ViewController.swift */,
+				3DF9E67423FB771700AAA0EA /* Main.storyboard */,
+				3DF9E67723FB771B00AAA0EA /* Assets.xcassets */,
+				3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */,
+				3DF9E67C23FB771B00AAA0EA /* Info.plist */,
+				3DF9E68023FB790E00AAA0EA /* MPCService.swift */,
+			);
+			path = TVOSMPC;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,6 +196,23 @@
 			productReference = 3D50EFEF23EFE10600BA474C /* FirstTVOSApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		3DF9E66B23FB771700AAA0EA /* TVOSMPC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DF9E67D23FB771B00AAA0EA /* Build configuration list for PBXNativeTarget "TVOSMPC" */;
+			buildPhases = (
+				3DF9E66823FB771700AAA0EA /* Sources */,
+				3DF9E66923FB771700AAA0EA /* Frameworks */,
+				3DF9E66A23FB771700AAA0EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TVOSMPC;
+			productName = TVOSMPC;
+			productReference = 3DF9E66C23FB771700AAA0EA /* TVOSMPC.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -164,6 +224,9 @@
 				ORGANIZATIONNAME = ShanOvO;
 				TargetAttributes = {
 					3D50EFEE23EFE10600BA474C = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					3DF9E66B23FB771700AAA0EA = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
 				};
@@ -182,6 +245,7 @@
 			projectRoot = "";
 			targets = (
 				3D50EFEE23EFE10600BA474C /* FirstTVOSApp */,
+				3DF9E66B23FB771700AAA0EA /* TVOSMPC */,
 			);
 		};
 /* End PBXProject section */
@@ -207,6 +271,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3DF9E66A23FB771700AAA0EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DF9E67B23FB771B00AAA0EA /* LaunchScreen.storyboard in Resources */,
+				3DF9E67823FB771B00AAA0EA /* Assets.xcassets in Resources */,
+				3DF9E67623FB771700AAA0EA /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -218,9 +292,21 @@
 				3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */,
 				3D50F00523EFE51D00BA474C /* LocationService.swift in Sources */,
 				3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */,
+				3DF9E66723FADB2600AAA0EA /* MPCService.swift in Sources */,
 				3DDF96BA23F3F68F00B787BB /* GameListViewController.swift in Sources */,
 				3DDF96A023EFFC0C00B787BB /* GifImage.swift in Sources */,
 				3D50EFF323EFE10600BA474C /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DF9E66823FB771700AAA0EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DF9E68123FB790E00AAA0EA /* MPCService.swift in Sources */,
+				3DF9E67323FB771700AAA0EA /* ViewController.swift in Sources */,
+				3DF9E66F23FB771700AAA0EA /* AppDelegate.swift in Sources */,
+				3DF9E67123FB771700AAA0EA /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +325,22 @@
 			isa = PBXVariantGroup;
 			children = (
 				3D50EFFC23EFE10B00BA474C /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		3DF9E67423FB771700AAA0EA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DF9E67523FB771700AAA0EA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DF9E67A23FB771B00AAA0EA /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -398,6 +500,46 @@
 			};
 			name = Release;
 		};
+		3DF9E67E23FB771B00AAA0EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N3TUMP2K5W;
+				INFOPLIST_FILE = TVOSMPC/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shanOvO.TVOSMPC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3DF9E67F23FB771B00AAA0EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N3TUMP2K5W;
+				INFOPLIST_FILE = TVOSMPC/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shanOvO.TVOSMPC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -415,6 +557,15 @@
 			buildConfigurations = (
 				3D50F00223EFE10B00BA474C /* Debug */,
 				3D50F00323EFE10B00BA474C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DF9E67D23FB771B00AAA0EA /* Build configuration list for PBXNativeTarget "TVOSMPC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DF9E67E23FB771B00AAA0EA /* Debug */,
+				3DF9E67F23FB771B00AAA0EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
