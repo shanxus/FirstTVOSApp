@@ -13,6 +13,9 @@
 		3D50EFFA23EFE10B00BA474C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D50EFF923EFE10B00BA474C /* Assets.xcassets */; };
 		3D50EFFD23EFE10B00BA474C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D50EFFB23EFE10B00BA474C /* LaunchScreen.storyboard */; };
 		3D50F00523EFE51D00BA474C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D50F00423EFE51D00BA474C /* LocationService.swift */; };
+		3D9DB43123FC130B000D40FF /* WerewolfDashboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D9DB43023FC130B000D40FF /* WerewolfDashboard.storyboard */; };
+		3D9DB43323FC1953000D40FF /* WerewolfDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9DB43223FC1953000D40FF /* WerewolfDashboardViewController.swift */; };
+		3D9DB43523FC1BCC000D40FF /* WerewolfDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9DB43423FC1BCC000D40FF /* WerewolfDashboardViewModel.swift */; };
 		3DDF969C23EFF51200B787BB /* SSH_home.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF969A23EFF3C300B787BB /* SSH_home.jpg */; };
 		3DDF969E23EFFB6D00B787BB /* bulbasuar_walking_gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF969D23EFFB6D00B787BB /* bulbasuar_walking_gif.gif */; };
 		3DDF96A023EFFC0C00B787BB /* GifImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF969F23EFFC0C00B787BB /* GifImage.swift */; };
@@ -30,7 +33,7 @@
 		3DF9E66723FADB2600AAA0EA /* MPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66623FADB2500AAA0EA /* MPCService.swift */; };
 		3DF9E66F23FB771700AAA0EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */; };
 		3DF9E67123FB771700AAA0EA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */; };
-		3DF9E67323FB771700AAA0EA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67223FB771700AAA0EA /* ViewController.swift */; };
+		3DF9E67323FB771700AAA0EA /* MPCPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67223FB771700AAA0EA /* MPCPhoneViewController.swift */; };
 		3DF9E67623FB771700AAA0EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67423FB771700AAA0EA /* Main.storyboard */; };
 		3DF9E67823FB771B00AAA0EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67723FB771B00AAA0EA /* Assets.xcassets */; };
 		3DF9E67B23FB771B00AAA0EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */; };
@@ -47,6 +50,9 @@
 		3D50EFFE23EFE10B00BA474C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D50F00423EFE51D00BA474C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		3D6E661523F457650038F6F4 /* werewolf_game.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = werewolf_game.jpg; sourceTree = "<group>"; };
+		3D9DB43023FC130B000D40FF /* WerewolfDashboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WerewolfDashboard.storyboard; sourceTree = "<group>"; };
+		3D9DB43223FC1953000D40FF /* WerewolfDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfDashboardViewController.swift; sourceTree = "<group>"; };
+		3D9DB43423FC1BCC000D40FF /* WerewolfDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfDashboardViewModel.swift; sourceTree = "<group>"; };
 		3DDF969A23EFF3C300B787BB /* SSH_home.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SSH_home.jpg; sourceTree = "<group>"; };
 		3DDF969D23EFFB6D00B787BB /* bulbasuar_walking_gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = bulbasuar_walking_gif.gif; sourceTree = "<group>"; };
 		3DDF969F23EFFC0C00B787BB /* GifImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifImage.swift; sourceTree = "<group>"; };
@@ -64,7 +70,7 @@
 		3DF9E66C23FB771700AAA0EA /* TVOSMPC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TVOSMPC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		3DF9E67223FB771700AAA0EA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3DF9E67223FB771700AAA0EA /* MPCPhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCPhoneViewController.swift; sourceTree = "<group>"; };
 		3DF9E67523FB771700AAA0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3DF9E67723FB771B00AAA0EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DF9E67A23FB771B00AAA0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -157,6 +163,9 @@
 			children = (
 				3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */,
 				3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */,
+				3D9DB43023FC130B000D40FF /* WerewolfDashboard.storyboard */,
+				3D9DB43223FC1953000D40FF /* WerewolfDashboardViewController.swift */,
+				3D9DB43423FC1BCC000D40FF /* WerewolfDashboardViewModel.swift */,
 			);
 			path = Werewolf;
 			sourceTree = "<group>";
@@ -166,7 +175,7 @@
 			children = (
 				3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */,
 				3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */,
-				3DF9E67223FB771700AAA0EA /* ViewController.swift */,
+				3DF9E67223FB771700AAA0EA /* MPCPhoneViewController.swift */,
 				3DF9E67423FB771700AAA0EA /* Main.storyboard */,
 				3DF9E67723FB771B00AAA0EA /* Assets.xcassets */,
 				3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */,
@@ -259,6 +268,7 @@
 				3DF9E65E23F96F4100AAA0EA /* werewolf_game.jpg in Resources */,
 				3DDF96AB23F0362A00B787BB /* media.jpg in Resources */,
 				3DDF96B123F0389100B787BB /* game_play.jpg in Resources */,
+				3D9DB43123FC130B000D40FF /* WerewolfDashboard.storyboard in Resources */,
 				3DDF96AD23F036A800B787BB /* weather.jpg in Resources */,
 				3D50EFFD23EFE10B00BA474C /* LaunchScreen.storyboard in Resources */,
 				3DDF96A723F02E0800B787BB /* resized_clock.jpg in Resources */,
@@ -289,6 +299,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D50EFF523EFE10600BA474C /* ViewController.swift in Sources */,
+				3D9DB43323FC1953000D40FF /* WerewolfDashboardViewController.swift in Sources */,
+				3D9DB43523FC1BCC000D40FF /* WerewolfDashboardViewModel.swift in Sources */,
 				3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */,
 				3D50F00523EFE51D00BA474C /* LocationService.swift in Sources */,
 				3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */,
@@ -304,7 +316,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3DF9E68123FB790E00AAA0EA /* MPCService.swift in Sources */,
-				3DF9E67323FB771700AAA0EA /* ViewController.swift in Sources */,
+				3DF9E67323FB771700AAA0EA /* MPCPhoneViewController.swift in Sources */,
 				3DF9E66F23FB771700AAA0EA /* AppDelegate.swift in Sources */,
 				3DF9E67123FB771700AAA0EA /* SceneDelegate.swift in Sources */,
 			);

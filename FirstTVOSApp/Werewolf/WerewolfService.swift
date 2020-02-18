@@ -9,10 +9,12 @@
 import Foundation
 import AVFoundation
 
+protocol WerewolfServiceDelegate: class {
+    func didCreate(characters: [WerewolfCharacter])
+}
+
 class WerewolfService: NSObject {
-    
-    static let shared = WerewolfService()
-    
+            
     private var characters: [WerewolfCharacter] = []
     
     private var mpcService: MPCService?
@@ -21,24 +23,30 @@ class WerewolfService: NSObject {
     
     private var currentStage: Int = -1
     
-    private override init() {
+    private(set) var gameMode: WerewolfGameMode
+    
+    weak var delegate: WerewolfServiceDelegate?
+    
+    init(mode: WerewolfGameMode) {
+        self.gameMode = mode
         super.init()
     }
     
-    func startGame(with mode: WerewolfGameMode) {
+    func startGame() {
         
-        createPlayersRandomly(with: mode)
+        createCharactersRandomly(with: gameMode)
         
-        let species = characters.map { $0.species }
+        delegate?.didCreate(characters: characters)
         
-        synthesizer = AVSpeechSynthesizer()
-        synthesizer?.delegate = self
+//        let species = characters.map { $0.species }
         
-        mpcService = MPCService()
-        startNextFlow()
+//        synthesizer = AVSpeechSynthesizer()
+//        synthesizer?.delegate = self
+        
+//        startNextFlow()
     }
     
-    private func createPlayersRandomly(with mode: WerewolfGameMode) {
+    private func createCharactersRandomly(with mode: WerewolfGameMode) {
         let species = mode.getSpecies()
         var characters = [WerewolfCharacter]()
         
@@ -78,7 +86,8 @@ class WerewolfService: NSObject {
 extension WerewolfService: AVSpeechSynthesizerDelegate {
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         currentStage += 1
-        sleep(5)
-        startNextFlow()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [unowned self] in
+            self.startNextFlow()
+        }
     }
 }

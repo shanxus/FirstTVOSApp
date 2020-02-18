@@ -59,7 +59,12 @@ extension GameListViewController: UICollectionViewDataSource {
 }
 
 extension GameListViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let werewolfDashboardViewController = UIStoryboard(name: "WerewolfDashboard", bundle: .main).instantiateViewController(identifier: "WerewolfDashboardViewController") as! WerewolfDashboardViewController
+        
+        navigationController?.pushViewController(werewolfDashboardViewController, animated: true)
+    }
 }
 
 extension GameListViewController: UICollectionViewDelegateFlowLayout {

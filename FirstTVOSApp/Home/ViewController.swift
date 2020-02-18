@@ -33,8 +33,6 @@ class ViewController: UIViewController {
         
         setupHomeInformationViews()
         setupLocationService()
-        
-        WerewolfService.shared.startGame(with: .people6)
     }
 
     override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {

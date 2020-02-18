@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="15705" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="appleTV" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Werewolf Dashboard View Controller-->
+        <scene sceneID="vua-Tr-8ra">
+            <objects>
+                <viewController storyboardIdentifier="WerewolfDashboardViewController" id="dfY-93-z3n" customClass="WerewolfDashboardViewController" customModule="FirstTVOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VAh-4b-AD7"/>
+                        <viewControllerLayoutGuide type="bottom" id="Oph-Oq-w4I"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Scs-3E-rSe">
+                        <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s2C-XQ-kdV">
+                                <rect key="frame" x="1314" y="60" width="576" height="1000"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="參賽名單" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6n7-Ow-OhI">
+                                        <rect key="frame" x="30" y="30" width="526" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="1QL-3y-dm9"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="35"/>
+                                        <color key="textColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" sectionHeaderHeight="66" sectionFooterHeight="66" translatesAutoresizingMaskIntoConstraints="NO" id="rR8-2o-VvO">
+                                        <rect key="frame" x="30" y="100" width="516" height="880"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WerewolfCompetitorTableViewCell" id="CpS-MO-GGB" customClass="WerewolfCompetitorTableViewCell" customModule="FirstTVOSApp" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="66" width="486" height="66"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CpS-MO-GGB" id="Wf0-B1-XDu">
+                                                    <rect key="frame" x="0.0" y="0.0" width="486" height="66"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kc5-Ax-wcf">
+                                                            <rect key="frame" x="30" y="12.5" width="436" height="41"/>
+                                                            <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="30"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="kc5-Ax-wcf" secondAttribute="trailing" constant="20" symbolic="YES" id="lEw-tz-JIT"/>
+                                                        <constraint firstItem="kc5-Ax-wcf" firstAttribute="centerY" secondItem="Wf0-B1-XDu" secondAttribute="centerY" id="pPO-hg-YDW"/>
+                                                        <constraint firstItem="kc5-Ax-wcf" firstAttribute="leading" secondItem="Wf0-B1-XDu" secondAttribute="leading" constant="30" id="waC-bH-o1y"/>
+                                                    </constraints>
+                                                </tableViewCellContentView>
+                                                <connections>
+                                                    <outlet property="competitorNameLabel" destination="kc5-Ax-wcf" id="4tQ-O8-k4h"/>
+                                                </connections>
+                                            </tableViewCell>
+                                        </prototypes>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="6n7-Ow-OhI" secondAttribute="trailing" constant="20" symbolic="YES" id="3Wl-Fa-U8X"/>
+                                    <constraint firstItem="6n7-Ow-OhI" firstAttribute="top" secondItem="s2C-XQ-kdV" secondAttribute="top" constant="30" id="8wP-Pk-nq3"/>
+                                    <constraint firstAttribute="bottom" secondItem="rR8-2o-VvO" secondAttribute="bottom" constant="20" symbolic="YES" id="NEj-jj-B3V"/>
+                                    <constraint firstItem="rR8-2o-VvO" firstAttribute="leading" secondItem="s2C-XQ-kdV" secondAttribute="leading" constant="30" id="Rcc-1s-21y"/>
+                                    <constraint firstAttribute="trailing" secondItem="rR8-2o-VvO" secondAttribute="trailing" constant="30" id="XiT-r8-Opk"/>
+                                    <constraint firstItem="6n7-Ow-OhI" firstAttribute="leading" secondItem="s2C-XQ-kdV" secondAttribute="leading" constant="30" id="iBo-yf-ktt"/>
+                                    <constraint firstItem="rR8-2o-VvO" firstAttribute="top" secondItem="6n7-Ow-OhI" secondAttribute="bottom" constant="30" id="jZZ-Ti-wdS"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EwD-CN-wCz">
+                                <rect key="frame" x="30" y="60" width="1254" height="810"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="玩家情況" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OSd-zS-gaL">
+                                        <rect key="frame" x="30" y="30" width="1204" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="nYf-n9-nkZ"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="35"/>
+                                        <color key="textColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="OSd-zS-gaL" secondAttribute="trailing" constant="20" symbolic="YES" id="Uwc-Yv-Aol"/>
+                                    <constraint firstItem="OSd-zS-gaL" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="leading" constant="30" id="eFg-jp-5PB"/>
+                                    <constraint firstItem="OSd-zS-gaL" firstAttribute="top" secondItem="EwD-CN-wCz" secondAttribute="top" constant="30" id="eoc-P3-7bE"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gKB-uG-z7U">
+                                <rect key="frame" x="30" y="900" width="1254" height="160"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Console" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mtq-Bp-rND">
+                                        <rect key="frame" x="30" y="30" width="1224" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="ZxH-Ci-owW"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="35"/>
+                                        <color key="textColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="Mtq-Bp-rND" firstAttribute="top" secondItem="gKB-uG-z7U" secondAttribute="top" constant="30" id="D4K-1u-zeg"/>
+                                    <constraint firstAttribute="trailing" secondItem="Mtq-Bp-rND" secondAttribute="trailing" id="kKG-5K-ZLW"/>
+                                    <constraint firstItem="Mtq-Bp-rND" firstAttribute="leading" secondItem="gKB-uG-z7U" secondAttribute="leading" constant="30" id="ocd-Wb-CDn"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="s2C-XQ-kdV" firstAttribute="width" secondItem="Scs-3E-rSe" secondAttribute="width" multiplier="0.3" id="Da3-uV-byV"/>
+                            <constraint firstItem="gKB-uG-z7U" firstAttribute="leading" secondItem="Scs-3E-rSe" secondAttribute="leading" constant="30" id="EOd-VS-Fcd"/>
+                            <constraint firstItem="s2C-XQ-kdV" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="trailing" constant="30" id="Gbf-Rc-9pe"/>
+                            <constraint firstItem="EwD-CN-wCz" firstAttribute="height" secondItem="Scs-3E-rSe" secondAttribute="height" multiplier="0.75" id="fjg-T8-axr"/>
+                            <constraint firstAttribute="bottom" secondItem="s2C-XQ-kdV" secondAttribute="bottom" constant="20" id="hUV-Wr-oSn"/>
+                            <constraint firstAttribute="trailing" secondItem="s2C-XQ-kdV" secondAttribute="trailing" constant="30" id="j5L-GK-vOi"/>
+                            <constraint firstItem="gKB-uG-z7U" firstAttribute="top" secondItem="EwD-CN-wCz" secondAttribute="bottom" constant="30" id="jpy-O6-5x2"/>
+                            <constraint firstItem="EwD-CN-wCz" firstAttribute="top" secondItem="tng-W8-nCA" secondAttribute="top" id="jqe-EP-Uux"/>
+                            <constraint firstAttribute="bottom" secondItem="gKB-uG-z7U" secondAttribute="bottom" constant="20" symbolic="YES" id="kZ3-C1-Iq5"/>
+                            <constraint firstItem="s2C-XQ-kdV" firstAttribute="leading" secondItem="gKB-uG-z7U" secondAttribute="trailing" constant="30" id="ndO-Cx-gDf"/>
+                            <constraint firstItem="EwD-CN-wCz" firstAttribute="leading" secondItem="Scs-3E-rSe" secondAttribute="leading" constant="30" id="nfN-eQ-MhP"/>
+                            <constraint firstItem="s2C-XQ-kdV" firstAttribute="top" secondItem="tng-W8-nCA" secondAttribute="top" id="uUc-dW-o4J"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="tng-W8-nCA"/>
+                    </view>
+                    <connections>
+                        <outlet property="competitorListTitleLabel" destination="6n7-Ow-OhI" id="HGz-iV-zTE"/>
+                        <outlet property="werewolfCompetitorListTableView" destination="rR8-2o-VvO" id="RYx-ex-1ro"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mUf-Iq-sdE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-142" y="75"/>
+        </scene>
+    </scenes>
+</document>

@@ -9,11 +9,25 @@
 import Foundation
 import MultipeerConnectivity
 
+protocol TVMPCServiceDelegate: class {
+    func connectedPeersDidChange()
+}
+
 class MPCService: NSObject {
     
     var peerID: MCPeerID!
     var mcSession: MCSession!
     var mcBrowser: MCNearbyServiceBrowser!
+    
+    weak var delegate: TVMPCServiceDelegate?
+    
+    private(set) var connectedPeerIDs: [MCPeerID] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                self.delegate?.connectedPeersDidChange()
+            }
+        }
+    }
     
     override init() {
         super.init()
@@ -21,11 +35,9 @@ class MPCService: NSObject {
         peerID = MCPeerID(displayName: UIDevice.current.name)
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .none)
         mcSession.delegate = self
-        
-        browse()
     }
     
-    private func browse() {
+    func browse() {
         mcBrowser = MCNearbyServiceBrowser(peer: peerID, serviceType: "ssh-wg") // SSH_werewolf game.
         mcBrowser.delegate = self
         mcBrowser.startBrowsingForPeers()
@@ -37,6 +49,9 @@ extension MPCService: MCSessionDelegate {
         switch state {
         case .connected:
             print("state of tv session: connected")
+            
+            connectedPeerIDs.append(peerID)
+            
         case .connecting:
             print("state of tv session: connecting")
         case .notConnected:
@@ -70,7 +85,9 @@ extension MPCService: MCNearbyServiceBrowserDelegate {
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        
+        connectedPeerIDs.removeAll {
+            $0 == peerID
+        }
     }
     
     
