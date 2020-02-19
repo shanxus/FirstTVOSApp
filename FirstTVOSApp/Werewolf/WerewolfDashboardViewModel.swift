@@ -17,14 +17,14 @@ protocol WerewolfDashboardViewModelDelegate: class {
 class WerewolfDashboardViewModel: NSObject {
     
     weak var delegate: WerewolfDashboardViewModelDelegate?
-    private var tvMPCService: MPCService?
+    private var tvMPCService: TVMPCService?
     
     private var werewolfService: WerewolfService?
     
     override init() {
         super.init()
         
-        tvMPCService = MPCService()
+        tvMPCService = TVMPCService()
         tvMPCService?.delegate = self
     }
     

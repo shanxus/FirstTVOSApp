@@ -13,7 +13,7 @@ protocol TVMPCServiceDelegate: class {
     func connectedPeersDidChange()
 }
 
-class MPCService: NSObject {
+class TVMPCService: NSObject {
     
     var peerID: MCPeerID!
     var mcSession: MCSession!
@@ -44,7 +44,7 @@ class MPCService: NSObject {
     }
 }
 
-extension MPCService: MCSessionDelegate {
+extension TVMPCService: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
         case .connected:
@@ -76,7 +76,7 @@ extension MPCService: MCSessionDelegate {
     }
 }
 
-extension MPCService: MCNearbyServiceBrowserDelegate {
+extension TVMPCService: MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         print("[foundPeer: \(peerID) with info: \(info)]")
         

@@ -17,8 +17,6 @@ class WerewolfService: NSObject {
             
     private var characters: [WerewolfCharacter] = []
     
-    private var mpcService: MPCService?
-    
     private var synthesizer: AVSpeechSynthesizer?
     
     private var currentStage: Int = -1

@@ -12,7 +12,7 @@ class MPCPhoneViewController: UIViewController {
     
     @IBOutlet weak var numberCollectionView: UICollectionView!
 
-    var mpcService: MPCService?
+    var mpcService: PhoneMPCService?
     private let cellIdentifier = "numberCellIdentifier"
     
     override func viewDidLoad() {
@@ -22,7 +22,7 @@ class MPCPhoneViewController: UIViewController {
         numberCollectionView.dataSource = self
         numberCollectionView.delegate = self
         
-        mpcService = MPCService()
+        mpcService = PhoneMPCService()
     }
     
 }

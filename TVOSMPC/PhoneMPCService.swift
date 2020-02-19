@@ -9,7 +9,7 @@
 import Foundation
 import MultipeerConnectivity
 
-class MPCService: NSObject {
+class PhoneMPCService: NSObject {
     
     var peerID: MCPeerID!
     var mcSession: MCSession!
@@ -36,7 +36,7 @@ class MPCService: NSObject {
     }
 }
 
-extension MPCService: MCSessionDelegate {
+extension PhoneMPCService: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
         case .connecting:
@@ -65,7 +65,7 @@ extension MPCService: MCSessionDelegate {
     }
 }
 
-extension MPCService: MCNearbyServiceAdvertiserDelegate {
+extension PhoneMPCService: MCNearbyServiceAdvertiserDelegate {
     
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         

@@ -30,14 +30,14 @@
 		3DF9E66023F9714500AAA0EA /* switch_background_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */; };
 		3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */; };
 		3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */; };
-		3DF9E66723FADB2600AAA0EA /* MPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66623FADB2500AAA0EA /* MPCService.swift */; };
+		3DF9E66723FADB2600AAA0EA /* TVMPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66623FADB2500AAA0EA /* TVMPCService.swift */; };
 		3DF9E66F23FB771700AAA0EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */; };
 		3DF9E67123FB771700AAA0EA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */; };
 		3DF9E67323FB771700AAA0EA /* MPCPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E67223FB771700AAA0EA /* MPCPhoneViewController.swift */; };
 		3DF9E67623FB771700AAA0EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67423FB771700AAA0EA /* Main.storyboard */; };
 		3DF9E67823FB771B00AAA0EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67723FB771B00AAA0EA /* Assets.xcassets */; };
 		3DF9E67B23FB771B00AAA0EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */; };
-		3DF9E68123FB790E00AAA0EA /* MPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E68023FB790E00AAA0EA /* MPCService.swift */; };
+		3DF9E68123FB790E00AAA0EA /* PhoneMPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9E68023FB790E00AAA0EA /* PhoneMPCService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +66,7 @@
 		3DF9E65F23F9714500AAA0EA /* switch_background_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = switch_background_image.jpg; sourceTree = "<group>"; };
 		3DF9E66223F97B2000AAA0EA /* WerewolfModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfModel.swift; sourceTree = "<group>"; };
 		3DF9E66423F9866B00AAA0EA /* WerewolfService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WerewolfService.swift; sourceTree = "<group>"; };
-		3DF9E66623FADB2500AAA0EA /* MPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCService.swift; sourceTree = "<group>"; };
+		3DF9E66623FADB2500AAA0EA /* TVMPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMPCService.swift; sourceTree = "<group>"; };
 		3DF9E66C23FB771700AAA0EA /* TVOSMPC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TVOSMPC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DF9E66E23FB771700AAA0EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3DF9E67023FB771700AAA0EA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@
 		3DF9E67723FB771B00AAA0EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DF9E67A23FB771B00AAA0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3DF9E67C23FB771B00AAA0EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3DF9E68023FB790E00AAA0EA /* MPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCService.swift; sourceTree = "<group>"; };
+		3DF9E68023FB790E00AAA0EA /* PhoneMPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneMPCService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,7 +130,7 @@
 				3DDF969F23EFFC0C00B787BB /* GifImage.swift */,
 				3DDF96B723F2FF2400B787BB /* GameListViewController.storyboard */,
 				3DDF96B923F3F68F00B787BB /* GameListViewController.swift */,
-				3DF9E66623FADB2500AAA0EA /* MPCService.swift */,
+				3DF9E66623FADB2500AAA0EA /* TVMPCService.swift */,
 			);
 			path = FirstTVOSApp;
 			sourceTree = "<group>";
@@ -180,7 +180,7 @@
 				3DF9E67723FB771B00AAA0EA /* Assets.xcassets */,
 				3DF9E67923FB771B00AAA0EA /* LaunchScreen.storyboard */,
 				3DF9E67C23FB771B00AAA0EA /* Info.plist */,
-				3DF9E68023FB790E00AAA0EA /* MPCService.swift */,
+				3DF9E68023FB790E00AAA0EA /* PhoneMPCService.swift */,
 			);
 			path = TVOSMPC;
 			sourceTree = "<group>";
@@ -304,7 +304,7 @@
 				3DF9E66523F9866B00AAA0EA /* WerewolfService.swift in Sources */,
 				3D50F00523EFE51D00BA474C /* LocationService.swift in Sources */,
 				3DF9E66323F97B2000AAA0EA /* WerewolfModel.swift in Sources */,
-				3DF9E66723FADB2600AAA0EA /* MPCService.swift in Sources */,
+				3DF9E66723FADB2600AAA0EA /* TVMPCService.swift in Sources */,
 				3DDF96BA23F3F68F00B787BB /* GameListViewController.swift in Sources */,
 				3DDF96A023EFFC0C00B787BB /* GifImage.swift in Sources */,
 				3D50EFF323EFE10600BA474C /* AppDelegate.swift in Sources */,
@@ -315,7 +315,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DF9E68123FB790E00AAA0EA /* MPCService.swift in Sources */,
+				3DF9E68123FB790E00AAA0EA /* PhoneMPCService.swift in Sources */,
 				3DF9E67323FB771700AAA0EA /* MPCPhoneViewController.swift in Sources */,
 				3DF9E66F23FB771700AAA0EA /* AppDelegate.swift in Sources */,
 				3DF9E67123FB771700AAA0EA /* SceneDelegate.swift in Sources */,
