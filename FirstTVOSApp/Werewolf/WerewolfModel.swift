@@ -115,6 +115,55 @@ enum WerewolfSpecies {
     }
 }
 
+extension WerewolfSpecies: RawRepresentable {
+        
+    typealias RawValue = (Int, Int?)
+    
+    init?(rawValue: RawValue) {
+        switch rawValue.0 {
+        case 0:
+            if let number = rawValue.1 {
+                self = .villager(count: number)
+            } else {
+                return nil
+            }
+        case 1:
+            self = .witch
+        case 2:
+            self = .forecaster
+        case 3:
+            self = .hunter
+        case 4:
+            self = .knight
+        case 5:
+            if let number = rawValue.1 {
+                self = .werewolf(count: number)
+            } else {
+                return nil
+            }
+        default:
+            return nil
+        }
+    }
+    
+    var rawValue: RawValue {
+        switch self {
+        case .villager(let count):
+            return (0, count)
+        case .witch:
+            return (1, nil)
+        case .forecaster:
+            return (2, nil)
+        case .hunter:
+            return (3, nil)
+        case .knight:
+            return (4, nil)
+        case .werewolf(let count):
+            return (5, count)
+        }
+    }
+}
+
 enum WerewolfGroup {
     case good
     case bad
@@ -132,4 +181,11 @@ struct WerewolfCharacter: WerewolfCharacteristic {
     var group: WerewolfGroup
     var number: Int
     var superpower: [WerewolfSuperpower]
+    
+    init(species: WerewolfSpecies, number: Int) {
+        self.species = species
+        self.group = species.getGroup()
+        self.number = number
+        self.superpower = species.getSuperpowers()
+    }
 }

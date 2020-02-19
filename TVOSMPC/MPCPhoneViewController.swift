@@ -11,9 +11,16 @@ import UIKit
 class MPCPhoneViewController: UIViewController {
     
     @IBOutlet weak var numberCollectionView: UICollectionView!
-
-    var mpcService: PhoneMPCService?
+    
+    @IBOutlet weak var yourCharacterLabel: UILabel!
+    
     private let cellIdentifier = "numberCellIdentifier"
+    
+    private var viewModel: MPCPhoneViewModel?
+    
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return .portrait
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +29,8 @@ class MPCPhoneViewController: UIViewController {
         numberCollectionView.dataSource = self
         numberCollectionView.delegate = self
         
-        mpcService = PhoneMPCService()
+        viewModel = MPCPhoneViewModel()
+        viewModel?.delegate = self
     }
     
 }
@@ -66,6 +74,13 @@ extension MPCPhoneViewController: UICollectionViewDelegateFlowLayout {
 extension MPCPhoneViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("did select: \(indexPath)")
+    }
+}
+
+extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
+    func didUpdateCharacter(as title: String) {
+                
+        yourCharacterLabel.text = String(format: "Your character is %@", title)
     }
 }
 

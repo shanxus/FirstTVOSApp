@@ -34,26 +34,20 @@ class WerewolfService: NSObject {
         
         createCharactersRandomly(with: gameMode)
         
-        delegate?.didCreate(characters: characters)
-        
-//        let species = characters.map { $0.species }
-        
-//        synthesizer = AVSpeechSynthesizer()
-//        synthesizer?.delegate = self
-        
-//        startNextFlow()
+        synthesizer = AVSpeechSynthesizer()
+        synthesizer?.delegate = self
     }
     
     private func createCharactersRandomly(with mode: WerewolfGameMode) {
-        let species = mode.getSpecies()
+        var species = mode.getSpecies()
         var characters = [WerewolfCharacter]()
         
-        species.forEach {
-            let character = WerewolfCharacter(species: $0, group: $0.getGroup(), number: -1, superpower: $0.getSuperpowers())
+        species.shuffle()
+        
+        for (index, certainSpecies) in species.enumerated() {
+            let character = WerewolfCharacter(species: certainSpecies, number: index)
             characters.append(character)
         }
-        
-        characters.shuffle()
         
         self.characters = characters
         
@@ -68,7 +62,7 @@ class WerewolfService: NSObject {
         synthesizer?.speak(utterance)
     }
     
-    private func startNextFlow() {
+    func startNextFlow() {
 
         guard (currentStage + 1) < WerewolfScript.allCases.count else { return }
         

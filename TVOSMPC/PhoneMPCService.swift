@@ -9,11 +9,17 @@
 import Foundation
 import MultipeerConnectivity
 
+protocol PhoneMPCServiceDelegate: class {
+    func didReceiveCharacterInformation(character: WerewolfCharacter)
+}
+
 class PhoneMPCService: NSObject {
     
     var peerID: MCPeerID!
     var mcSession: MCSession!
     var advertiser: MCNearbyServiceAdvertiser!
+    
+    weak var delegate: PhoneMPCServiceDelegate?
     
     override init() {
         super.init()
@@ -21,6 +27,7 @@ class PhoneMPCService: NSObject {
         peerID = MCPeerID(displayName: UIDevice.current.name)
                 
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .none)
+        mcSession.delegate = self
         advertise()
     }
     
@@ -31,8 +38,49 @@ class PhoneMPCService: NSObject {
     
     }
     
-    private func showLocalNotification(with title: String, content: String) {
+    private func showLocalNotification(title: String, subtitle: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.subtitle = subtitle
+        content.body = body
+        content.sound = .default
         
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: "notification", content: content, trigger: nil)
+        
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: {error in
+            print("成功建立通知...")
+        })
+    }
+    
+    private func unwrapReceivedData(_ data: Data) {
+        guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String : Any], let firstKey = dictionary.keys.first else {
+            print("failed to unwrap received data")
+            return
+        }
+        
+        if firstKey == TVMPCService.characterInfoKey {
+            handleReceivingCharacterInfo(with: dictionary)
+        }
+    }
+    
+    private func handleReceivingCharacterInfo(with dictionary: [String : Any]) {
+        guard let peersDictionary = dictionary[TVMPCService.characterInfoKey] as? [String : Any] else { return }
+        guard let propertyDictionary = peersDictionary[peerID.displayName] as? [String : Any] else { return }
+        guard let number = propertyDictionary[TVMPCService.characterNumberKey] as? Int else { return }
+        
+        guard let speciesRawValueFirst = propertyDictionary[TVMPCService.characterSpeciesRawValueFirstKey] as? Int else { return }
+        
+        let speciesRawValueSecond = propertyDictionary[TVMPCService.characterSpeciesRawValueSecondKey] as? Int
+        
+        if let species = WerewolfSpecies(rawValue: (speciesRawValueFirst, speciesRawValueSecond)) {
+            
+            let werewolfCharacter = WerewolfCharacter(species: species, number: number)
+            delegate?.didReceiveCharacterInformation(character: werewolfCharacter)
+        } else {
+            showLocalNotification(title: "failed to get species", subtitle: "", body: "failed body")
+        }
     }
 }
 
@@ -49,7 +97,8 @@ extension PhoneMPCService: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        print("2")
+        print("[didReceive data on the phone MPC session]")
+        unwrapReceivedData(data)
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -70,6 +119,7 @@ extension PhoneMPCService: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         
         print("didReceiveInvitationFromPeer")
+        showLocalNotification(title: "didReceiveInvitationFromPeer", subtitle: "", body: "")
         invitationHandler(true, mcSession)
     }
     

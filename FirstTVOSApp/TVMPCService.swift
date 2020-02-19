@@ -42,6 +42,38 @@ class TVMPCService: NSObject {
         mcBrowser.delegate = self
         mcBrowser.startBrowsingForPeers()
     }
+    
+    func sendCharacterInfoToClients(_ characters: [WerewolfCharacter]) {
+        
+        var peersDictionary: [String : Any] = [:]
+        
+        for (index, peer) in connectedPeerIDs.enumerated() {
+            var propertyDictionary: [String : Any] = [:]
+
+            let character = characters[index]
+
+            propertyDictionary[TVMPCService.characterNumberKey] = character.number
+            propertyDictionary[TVMPCService.characterSpeciesRawValueFirstKey] = character.species.rawValue.0
+            propertyDictionary[TVMPCService.characterSpeciesRawValueSecondKey] = character.species.rawValue.1
+
+            peersDictionary[peer.displayName] = propertyDictionary
+        }
+        
+        let dictionary: [String : Any] = [TVMPCService.characterInfoKey : peersDictionary]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted) else {
+            // TODO: Should show local notification.
+            print("fail to serialize the object to data.")
+            return
+        }
+        
+        do {
+            try mcSession.send(data, toPeers: connectedPeerIDs, with: .reliable)
+        } catch {
+            // TODO: Should show local notification.
+            print("error for sending character to peers: \(error.localizedDescription)")
+        }
+    }
 }
 
 extension TVMPCService: MCSessionDelegate {
@@ -91,4 +123,14 @@ extension TVMPCService: MCNearbyServiceBrowserDelegate {
     }
     
     
+}
+
+extension TVMPCService {
+    static let characterInfoKey = "characterInfoKey"
+    
+    static let characterNumberKey = "characterNumber"
+    
+    static let characterSpeciesRawValueFirstKey = "speciesRawValueFirst"
+    
+    static let characterSpeciesRawValueSecondKey = "speciesRawValueSecond"
 }
