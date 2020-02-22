@@ -11,6 +11,7 @@ import MultipeerConnectivity
 
 protocol TVMPCServiceDelegate: class {
     func connectedPeersDidChange()
+    func didReceiveAllHandShakeMessages()
 }
 
 class TVMPCService: NSObject {
@@ -28,6 +29,10 @@ class TVMPCService: NSObject {
             }
         }
     }
+    
+    private var handShakeMessages: [String] = []
+    
+    private var peerCharacterMap: [String : WerewolfSpecies] = [:]
     
     override init() {
         super.init()
@@ -57,6 +62,9 @@ class TVMPCService: NSObject {
             propertyDictionary[TVMPCService.characterSpeciesRawValueSecondKey] = character.species.rawValue.1
 
             peersDictionary[peer.displayName] = propertyDictionary
+            
+            // Keep the paired information.
+            peerCharacterMap[peer.displayName] = character.species
         }
         
         let dictionary: [String : Any] = [TVMPCService.characterInfoKey : peersDictionary]
@@ -67,11 +75,53 @@ class TVMPCService: NSObject {
             return
         }
         
+        send(data: data, to: connectedPeerIDs)
+    }
+    
+    private func handleHandShake(for displayName: String) {
+        if !handShakeMessages.contains(displayName) {
+            handShakeMessages.append(displayName)
+        }
+        
+        if handShakeMessages.count == connectedPeerIDs.count {
+            handShakeMessages.removeAll()
+            delegate?.didReceiveAllHandShakeMessages()
+        }
+    }
+    
+    private func unwrapReceivedData(_ data: Data) {
+        guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String : Any], let firstKey = dictionary.keys.first else {
+            print("failed to unwrap received data")
+            return
+        }
+        
+        if firstKey == TVMPCService.handleShakeKey {
+            print("got hand shake message from peer")
+            guard let displayName = dictionary[TVMPCService.handleShakeKey] as? String else {
+                print("failed to unwrap hand shake message")
+                return
+            }
+            handleHandShake(for: displayName)
+        }
+    }
+    
+    func notifyWerewolfToKill() {
+            
+        let message = [TVMPCService.werewolfShouldKillKey : "Kill one player"]
+            
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
+            print("failed to encode message as data.")
+            return
+        }
+        
+        send(data: data, to: connectedPeerIDs)
+    }
+    
+    func send(data: Data, to peers: [MCPeerID]) {
         do {
-            try mcSession.send(data, toPeers: connectedPeerIDs, with: .reliable)
+            try mcSession.send(data, toPeers: peers, with: .reliable)
         } catch {
-            // TODO: Should show local notification.
-            print("error for sending character to peers: \(error.localizedDescription)")
+            print("failed to send data")
         }
     }
 }
@@ -92,7 +142,7 @@ extension TVMPCService: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        
+        unwrapReceivedData(data)
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -128,9 +178,13 @@ extension TVMPCService: MCNearbyServiceBrowserDelegate {
 extension TVMPCService {
     static let characterInfoKey = "characterInfoKey"
     
-    static let characterNumberKey = "characterNumber"
+    static let characterNumberKey = "characterNumberKey"
     
-    static let characterSpeciesRawValueFirstKey = "speciesRawValueFirst"
+    static let characterSpeciesRawValueFirstKey = "speciesRawValueFirstKey"
     
-    static let characterSpeciesRawValueSecondKey = "speciesRawValueSecond"
+    static let characterSpeciesRawValueSecondKey = "speciesRawValueSecondKey"
+    
+    static let handleShakeKey = "MPCHandShakeKey"
+    
+    static let werewolfShouldKillKey = "werewolfShouldKillKey"
 }

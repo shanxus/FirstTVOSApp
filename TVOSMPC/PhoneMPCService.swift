@@ -11,6 +11,7 @@ import MultipeerConnectivity
 
 protocol PhoneMPCServiceDelegate: class {
     func didReceiveCharacterInformation(character: WerewolfCharacter)
+    func didReceiveWerewolfShouldKill()
 }
 
 class PhoneMPCService: NSObject {
@@ -20,6 +21,8 @@ class PhoneMPCService: NSObject {
     var advertiser: MCNearbyServiceAdvertiser!
     
     weak var delegate: PhoneMPCServiceDelegate?
+    
+    private var lastPeerID: MCPeerID?
     
     override init() {
         super.init()
@@ -62,6 +65,9 @@ class PhoneMPCService: NSObject {
         
         if firstKey == TVMPCService.characterInfoKey {
             handleReceivingCharacterInfo(with: dictionary)
+            sendHandShakeMessage()
+        } else if firstKey ==  TVMPCService.werewolfShouldKillKey {
+            handleReceivingWerewolfShouldKill()
         }
     }
     
@@ -82,6 +88,30 @@ class PhoneMPCService: NSObject {
             showLocalNotification(title: "failed to get species", subtitle: "", body: "failed body")
         }
     }
+    
+    private func handleReceivingWerewolfShouldKill() {
+        
+    }
+    
+    private func sendHandShakeMessage() {
+        let message = [ TVMPCService.handleShakeKey : peerID.displayName]
+        
+        guard let encodedMessage = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
+            showLocalNotification(title: "fail to encode hand shake message 1", subtitle: "", body: "")
+            return
+        }
+        
+        guard let lastPeer = lastPeerID else {
+            showLocalNotification(title: "fail to encode hand shake message 2", subtitle: "", body: "")
+            return
+        }
+        
+        do {
+            try mcSession.send(encodedMessage, toPeers: [lastPeer], with: .reliable)
+        } catch {
+            print("failed to send hand shake message from phone MPC service.")
+        }
+    }
 }
 
 extension PhoneMPCService: MCSessionDelegate {
@@ -98,6 +128,7 @@ extension PhoneMPCService: MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         print("[didReceive data on the phone MPC session]")
+        lastPeerID = peerID
         unwrapReceivedData(data)
     }
     

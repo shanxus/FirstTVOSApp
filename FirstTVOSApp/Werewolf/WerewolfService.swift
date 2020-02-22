@@ -11,6 +11,7 @@ import AVFoundation
 
 protocol WerewolfServiceDelegate: class {
     func didCreate(characters: [WerewolfCharacter])
+    func didWaitForWerewolfToDecideVictim()
 }
 
 class WerewolfService: NSObject {
@@ -27,15 +28,15 @@ class WerewolfService: NSObject {
     
     init(mode: WerewolfGameMode) {
         self.gameMode = mode
+        synthesizer = AVSpeechSynthesizer()
         super.init()
+        
+        synthesizer?.delegate = self
     }
     
     func startGame() {
         
         createCharactersRandomly(with: gameMode)
-        
-        synthesizer = AVSpeechSynthesizer()
-        synthesizer?.delegate = self
     }
     
     private func createCharactersRandomly(with mode: WerewolfGameMode) {
@@ -58,30 +59,70 @@ class WerewolfService: NSObject {
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "zh-TW")
         utterance.rate = 0.5
-        
+                
         synthesizer?.speak(utterance)
     }
     
     func startNextFlow() {
-
-        guard (currentStage + 1) < WerewolfScript.allCases.count else { return }
+        print("startNextFlow - current stage: \(currentStage)")
         
-        if currentStage == -1 {
-            let stageScript = WerewolfScript.allCases[0].getScript()
+        if currentStage == WerewolfStage.preparingStage.rawValue {
+            
+            let stageScript = WerewolfStage.everyoneClosesEyes.getScript()
             speech(for: stageScript)
-        } else {
-            let stageScript = WerewolfScript.allCases[currentStage + 1].getScript()
+            
+        } else if currentStage == WerewolfStage.everyoneClosesEyes.rawValue {
+            
+            let stageScript = WerewolfStage.werewolfOpensEyes.getScript()
             speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.werewolfOpensEyes.rawValue {
+            
+            let stageScript = WerewolfStage.werewolfDecidesVictim.getScript()
+            speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.werewolfDecidesVictim.rawValue {
+            
+            let stageScript = WerewolfStage.werewolfClosesEyes.getScript()
+            speech(for: stageScript)
+            
         }
-        
     }
 }
 
 extension WerewolfService: AVSpeechSynthesizerDelegate {
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        currentStage += 1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [unowned self] in
-            self.startNextFlow()
+
+        print("did finish utterance - current stage: \(currentStage)")
+        
+        if currentStage == WerewolfStage.preparingStage.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.startNextFlow()
+            }
+            
+        } else if currentStage == WerewolfStage.everyoneClosesEyes.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.startNextFlow()
+            }
+            
+        } else if currentStage == WerewolfStage.werewolfOpensEyes.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.startNextFlow()
+            }
+            
+        } else if currentStage == WerewolfStage.werewolfDecidesVictim.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.startNextFlow()
+            }
+            
         }
     }
 }

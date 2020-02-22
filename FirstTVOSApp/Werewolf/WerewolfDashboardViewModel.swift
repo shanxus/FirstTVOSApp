@@ -40,10 +40,18 @@ class WerewolfDashboardViewModel: NSObject {
     
     private func startGameFlowIfNeeded() {
         
+        #if DEBUG
+        
         if (tvMPCService?.connectedPeerIDs.count ?? 0) > 0 {
             print("[start game]")
             werewolfService?.startGame()
         }
+        
+        #else
+        
+        guard let requiredPeople = werewolfService?.gameMode.getPeopleCount() else { return }
+        
+        #endif
     }
     
     func numberOfCurrentCompetitor() -> Int {
@@ -66,11 +74,19 @@ extension WerewolfDashboardViewModel: TVMPCServiceDelegate {
         
         startGameFlowIfNeeded()
     }
+    
+    func didReceiveAllHandShakeMessages() {
+        werewolfService?.startNextFlow()
+    }
 }
 
 extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
     func didCreate(characters: [WerewolfCharacter]) {
         
         tvMPCService?.sendCharacterInfoToClients(characters)
+    }
+    
+    func didWaitForWerewolfToDecideVictim() {
+        tvMPCService?.notifyWerewolfToKill()
     }
 }

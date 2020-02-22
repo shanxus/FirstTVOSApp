@@ -10,6 +10,10 @@ import Foundation
 
 protocol MPCPhoneViewModelDelegate: class {
     func didUpdateCharacter(as title: String)
+    
+    func shouldDisableNumbers()
+    
+    func shouldEnableNumbers()
 }
 
 class MPCPhoneViewModel: NSObject {
@@ -38,5 +42,16 @@ class MPCPhoneViewModel: NSObject {
 extension MPCPhoneViewModel: PhoneMPCServiceDelegate {
     func didReceiveCharacterInformation(character: WerewolfCharacter) {
         self.character = character
+    }
+    
+    func didReceiveWerewolfShouldKill() {
+        
+        guard let character = character else { return }
+        
+        if character.isWerewolf() {
+            
+        } else {
+            
+        }
     }
 }

@@ -22,6 +22,11 @@ class MPCPhoneViewController: UIViewController {
         return .portrait
     }
     
+    private var disabledItems: [Int] = []
+    
+    private let numberEnabledImageName: String = "werewolf_number_enabled"
+    private let numberDisabledImageName: String = "werewolf_number_disabled"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -31,6 +36,19 @@ class MPCPhoneViewController: UIViewController {
         
         viewModel = MPCPhoneViewModel()
         viewModel?.delegate = self
+    }
+    
+    func enableAllNumbers() {
+        disabledItems.removeAll()
+        numberCollectionView.reloadData()
+    }
+    
+    func disableAllNumbers() {
+        disabledItems.removeAll()
+        for i in 0..<9 {
+            disabledItems.append(i)
+        }
+        numberCollectionView.reloadData()
     }
     
 }
@@ -47,7 +65,7 @@ extension MPCPhoneViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! NumberCollectionViewCell
         
-        cell.backgroundColor = .green
+        cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
         cell.numberLabel.text = "\(indexPath.item + 1)"
         
         return cell
@@ -82,12 +100,22 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
                 
         yourCharacterLabel.text = String(format: "Your character is %@", title)
     }
+    
+    func shouldDisableNumbers() {
+        
+    }
+    
+    func shouldEnableNumbers() {
+        
+    }
 }
 
 class NumberCollectionViewCell: UICollectionViewCell {
     
     var backgroundColorView: UIView!
     var numberLabel: UILabel!
+    
+    var stateImageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -98,7 +126,7 @@ class NumberCollectionViewCell: UICollectionViewCell {
     private func setupViews() {
         /// Background color.
         backgroundColorView = UIView()
-        backgroundColorView.backgroundColor = .red
+        backgroundColorView.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
         backgroundColorView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(backgroundColorView)
         
@@ -111,8 +139,12 @@ class NumberCollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate(constraints)
         
+        /// Number label.
         numberLabel = UILabel()
+        numberLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
         numberLabel.textAlignment = .center
+        numberLabel.clipsToBounds = true
+        numberLabel.layer.cornerRadius = 10
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(numberLabel)
         
@@ -124,5 +156,20 @@ class NumberCollectionViewCell: UICollectionViewCell {
         ]
         
         NSLayoutConstraint.activate(labelConstraints)
+                
+        /// State image view.
+        let disabledImage = UIImage(named: "werewolf_number_disabled")?.withRenderingMode(.alwaysTemplate)
+        stateImageView = UIImageView(image: disabledImage)
+        stateImageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stateImageView)
+        
+        let stateImageViewConstraints = [
+            stateImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            stateImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            stateImageView.widthAnchor.constraint(equalToConstant: 24),
+            stateImageView.heightAnchor.constraint(equalToConstant: 24)
+        ]
+        
+        NSLayoutConstraint.activate(stateImageViewConstraints)
     }
 }

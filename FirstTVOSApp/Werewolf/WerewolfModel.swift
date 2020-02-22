@@ -8,11 +8,13 @@
 
 import Foundation
 
-enum WerewolfScript: CaseIterable {
-    case everyoneClosesEyes
-    case werewolfOpensEyes
-    case werewolfDecidesVictim
-    case werewolfClosesEyes
+enum WerewolfStage: Int, CaseIterable {
+    case preparingStage         = -1
+    case everyoneClosesEyes     = 0
+    case werewolfOpensEyes      = 1
+    case werewolfDecidesVictim  = 2
+    case werewolfClosesEyes     = 3
+    
     
     func getScript() -> String {
         switch self {
@@ -24,6 +26,8 @@ enum WerewolfScript: CaseIterable {
             return "請輸入狼人要殺的號碼"
         case .werewolfClosesEyes:
             return "狼人請閉眼"
+        default:
+            return ""
         }
     }
 }
@@ -187,5 +191,29 @@ struct WerewolfCharacter: WerewolfCharacteristic {
         self.group = species.getGroup()
         self.number = number
         self.superpower = species.getSuperpowers()
+    }
+    
+    func isVillager() -> Bool {
+        return species.rawValue.0 == 0
+    }
+    
+    func isWitch() -> Bool {
+        return species.rawValue.0 == 1
+    }
+    
+    func isForecaster() -> Bool {
+        return species.rawValue.0 == 2
+    }
+    
+    func isHunter() -> Bool {
+        return species.rawValue.0 == 3
+    }
+    
+    func isKnight() -> Bool {
+        return species.rawValue.0 == 4
+    }
+    
+    func isWerewolf() -> Bool {
+        return species.rawValue.0 == 5
     }
 }
