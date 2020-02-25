@@ -11,7 +11,9 @@ import MultipeerConnectivity
 
 protocol PhoneMPCServiceDelegate: class {
     func didReceiveCharacterInformation(character: WerewolfCharacter)
-    func didReceiveWerewolfShouldKill()
+    func didReceiveWerewolfShouldKill(victimNumbers: [Int])
+    func didReceiveWitchSavesOrNot(victimNumber: Int)
+    func didReceiveWitchKillsOrNot(victimNumbers: [Int])
 }
 
 class PhoneMPCService: NSObject {
@@ -67,7 +69,13 @@ class PhoneMPCService: NSObject {
             handleReceivingCharacterInfo(with: dictionary)
             sendHandShakeMessage()
         } else if firstKey ==  TVMPCService.werewolfShouldKillKey {
-            handleReceivingWerewolfShouldKill()
+            handleReceivingWerewolfShouldKill(with: dictionary)
+        } else if firstKey == TVMPCService.witchSavesOrNotKey {
+            showLocalNotification(title: "Got witchSavesOrNotKey", subtitle: "", body: "")
+            handleReceivingWitchSavesOrNot(with: dictionary)
+        } else if firstKey == TVMPCService.witchKillsOrNotKey {
+            showLocalNotification(title: "Got witchKillsOrNotKey", subtitle: "", body: "")
+            handleReceivingWitchKillsOrNot(with: dictionary)
         }
     }
     
@@ -89,12 +97,32 @@ class PhoneMPCService: NSObject {
         }
     }
     
-    private func handleReceivingWerewolfShouldKill() {
+    private func handleReceivingWerewolfShouldKill(with dictionary: [String : Any]) {
+        print("[handleReceivingWerewolfShouldKill]")
+        guard let victimNumbers = dictionary[TVMPCService.werewolfShouldKillKey] as? String else { return }
         
+        let victims = victimNumbers.components(separatedBy: ",").compactMap { Int($0) }
+        
+        delegate?.didReceiveWerewolfShouldKill(victimNumbers: victims)
+    }
+    
+    private func handleReceivingWitchSavesOrNot(with dictionary: [String : Any]) {
+        guard let victimNumber = dictionary[TVMPCService.witchSavesOrNotKey] as? Int else { return }
+        
+        delegate?.didReceiveWitchSavesOrNot(victimNumber: victimNumber)
+    }
+    
+    private func handleReceivingWitchKillsOrNot(with dictionary: [String : Any]) {
+        
+        guard let victimNumbers = dictionary[TVMPCService.witchKillsOrNotKey] as? String else { return }
+        
+        let victims = victimNumbers.components(separatedBy: ",").compactMap { Int($0) }
+        
+        delegate?.didReceiveWitchKillsOrNot(victimNumbers: victims)
     }
     
     private func sendHandShakeMessage() {
-        let message = [ TVMPCService.handleShakeKey : peerID.displayName]
+        let message = [ TVMPCService.MPCHandshakeKey : peerID.displayName]
         
         guard let encodedMessage = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             showLocalNotification(title: "fail to encode hand shake message 1", subtitle: "", body: "")
@@ -106,10 +134,46 @@ class PhoneMPCService: NSObject {
             return
         }
         
+        send(data: encodedMessage, to: [lastPeer])
+    }
+    
+    func sendKilledTarget(targetNumber: Int) {
+        let message = [TVMPCService.werewolfKillTargetKey : targetNumber]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else { return }
+        
+        guard let lastPeer = lastPeerID else { return }
+        
+        send(data: data, to: [lastPeer])
+            
+        showLocalNotification(title: "Send killed target", subtitle: "", body: "")
+    }
+    
+    func sendWitchSavesResult(witchSaves: Bool) {
+        let message = [TVMPCService.witchSavesResultKey : witchSaves]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else { return }
+
+        guard let lastPeer = lastPeerID else { return }
+        
+        send(data: data, to: [lastPeer])
+    }
+    
+    func sendWitchKilledTarget(targetNumber: Int) {
+        let message = [TVMPCService.witchKillTargetKey : targetNumber]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else { return }
+
+        guard let lastPeer = lastPeerID else { return }
+        
+        send(data: data, to: [lastPeer])
+    }
+    
+    func send(data: Data, to peers: [MCPeerID]) {
         do {
-            try mcSession.send(encodedMessage, toPeers: [lastPeer], with: .reliable)
+            try mcSession.send(data, toPeers: peers, with: .reliable)
         } catch {
-            print("failed to send hand shake message from phone MPC service.")
+            print("failed to send data in the phone MPC service")
         }
     }
 }

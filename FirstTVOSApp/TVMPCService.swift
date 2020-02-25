@@ -11,7 +11,6 @@ import MultipeerConnectivity
 
 protocol TVMPCServiceDelegate: class {
     func connectedPeersDidChange()
-    func didReceiveAllHandShakeMessages()
 }
 
 class TVMPCService: NSObject {
@@ -30,9 +29,7 @@ class TVMPCService: NSObject {
         }
     }
     
-    private var handShakeMessages: [String] = []
-    
-    private var peerCharacterMap: [String : WerewolfSpecies] = [:]
+    private var handshakeMessages: [String] = []
     
     override init() {
         super.init()
@@ -62,9 +59,6 @@ class TVMPCService: NSObject {
             propertyDictionary[TVMPCService.characterSpeciesRawValueSecondKey] = character.species.rawValue.1
 
             peersDictionary[peer.displayName] = propertyDictionary
-            
-            // Keep the paired information.
-            peerCharacterMap[peer.displayName] = character.species
         }
         
         let dictionary: [String : Any] = [TVMPCService.characterInfoKey : peersDictionary]
@@ -79,14 +73,41 @@ class TVMPCService: NSObject {
     }
     
     private func handleHandShake(for displayName: String) {
-        if !handShakeMessages.contains(displayName) {
-            handShakeMessages.append(displayName)
+        if !handshakeMessages.contains(displayName) {
+            handshakeMessages.append(displayName)
         }
         
-        if handShakeMessages.count == connectedPeerIDs.count {
-            handShakeMessages.removeAll()
-            delegate?.didReceiveAllHandShakeMessages()
+        if handshakeMessages.count == connectedPeerIDs.count {
+            handshakeMessages.removeAll()
+            
+            NotificationCenter.default.post(name: NSNotification.Name.MPCHandshake, object: nil, userInfo: nil)
         }
+    }
+    
+    private func handleGotVictimFromWerewolf(targetNumber: Int) {
+        
+        let userInfo = [TVMPCService.didGetWerewolfVictimKey : targetNumber]
+        
+        NotificationCenter.default.post(name: NSNotification.Name.didGetWerewolfVictim, object: nil, userInfo: userInfo)
+    }
+    
+    private func handleWitchSavesResult(witchSaves: Bool) {
+        print("handleWitchSavesResult: \(witchSaves)")
+        if witchSaves {
+            
+            // Send notification to remove the superpower.
+            let userInfo = [TVMPCService.witchDidSaveKey : witchSaves]
+            NotificationCenter.default.post(name: NSNotification.Name.witchDidSave, object: nil, userInfo: userInfo)
+        }
+        
+        // Send notification to make the stage continue.
+        NotificationCenter.default.post(name: NSNotification.Name.didGetWitchSaveResult, object: nil, userInfo: nil)
+    }
+    
+    private func handleWitchKills(targetNumber: Int) {
+        
+        let userInfo = [TVMPCService.didGetWitchVictimKey : targetNumber]
+        NotificationCenter.default.post(name: NSNotification.Name.didGetWitchVictim, object: nil, userInfo: userInfo)
     }
     
     private func unwrapReceivedData(_ data: Data) {
@@ -95,22 +116,78 @@ class TVMPCService: NSObject {
             return
         }
         
-        if firstKey == TVMPCService.handleShakeKey {
+        if firstKey == TVMPCService.MPCHandshakeKey {
             print("got hand shake message from peer")
-            guard let displayName = dictionary[TVMPCService.handleShakeKey] as? String else {
+            guard let displayName = dictionary[TVMPCService.MPCHandshakeKey] as? String else {
                 print("failed to unwrap hand shake message")
                 return
             }
             handleHandShake(for: displayName)
+            
+        } else if firstKey == TVMPCService.werewolfKillTargetKey {
+            print("got killed target")
+            guard let targetNumber = dictionary[TVMPCService.werewolfKillTargetKey] as? Int else {
+                print("failed to unwrap killed target")
+                return
+            }
+            
+            handleGotVictimFromWerewolf(targetNumber: targetNumber)
+            
+        } else if firstKey == TVMPCService.witchSavesResultKey {
+            print("got witch saves result")
+            
+            guard let savesResult = dictionary[TVMPCService.witchSavesResultKey] as? Bool else {
+                print("failed to unwrap saves result")
+                return
+            }
+            
+            handleWitchSavesResult(witchSaves: savesResult)
+            
+        } else if firstKey == TVMPCService.witchKillTargetKey {
+            print("got witchKillTargetKey")
+            
+            guard let targetNumber = dictionary[TVMPCService.witchKillTargetKey] as? Int else {
+                print("Failed to unwrap killed target")
+                return
+            }
+            
+            handleWitchKills(targetNumber: targetNumber)
         }
     }
     
-    func notifyWerewolfToKill() {
-            
-        let message = [TVMPCService.werewolfShouldKillKey : "Kill one player"]
+    func notifyWerewolfToKill(currentVictimNumbers: [Int]) {
+        print("[notifyWerewolfToKill]")
+        let victimsString = currentVictimNumbers.map { String($0) }.joined(separator: ",")
+        
+        let message = [TVMPCService.werewolfShouldKillKey : victimsString]
             
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             print("failed to encode message as data.")
+            return
+        }
+        
+        send(data: data, to: connectedPeerIDs)
+    }
+    
+    func notifyWitchToSave(number: Int) {
+        print("[notifyWitchToSave]")
+        
+        let message = [TVMPCService.witchSavesOrNotKey : number]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
+            return
+        }
+        
+        send(data: data, to: connectedPeerIDs)
+    }
+    
+    func notifyWitchToKill(currentVictimNumbers: [Int]) {
+        
+        let victimsString = currentVictimNumbers.map { String($0) }.joined(separator: ",")
+        
+        let message = [TVMPCService.witchKillsOrNotKey : victimsString]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             return
         }
         
@@ -184,7 +261,37 @@ extension TVMPCService {
     
     static let characterSpeciesRawValueSecondKey = "speciesRawValueSecondKey"
     
-    static let handleShakeKey = "MPCHandShakeKey"
+    static let MPCHandshakeKey = "MPCHandshakeKey"
     
     static let werewolfShouldKillKey = "werewolfShouldKillKey"
+    
+    static let werewolfKillTargetKey = "werewolfKillTargetKey"
+    
+    static let didGetWerewolfVictimKey = "didGetWerewolfVictimKey"
+    
+    static let witchSavesOrNotKey = "witchSavesOrNotKey"
+    
+    static let witchSavesResultKey = "witchSavesResultKey"
+    
+    static let witchDidSaveKey = "witchDidSaveKey"
+    
+    static let didGetWitchSaveResultKey = "didReceiveWitchSaveResultKey"
+    
+    static let witchKillsOrNotKey = "witchKillsOrNotKey"
+    
+    static let witchKillTargetKey = "witchKillTargetKey"
+    
+    static let didGetWitchVictimKey = "didGetWitchVictimKey"
+}
+
+extension Notification.Name {
+    static let MPCHandshake = Notification.Name(TVMPCService.MPCHandshakeKey)
+    
+    static let didGetWerewolfVictim = Notification.Name(TVMPCService.didGetWerewolfVictimKey)
+    
+    static let didGetWitchSaveResult = Notification.Name(TVMPCService.didGetWitchSaveResultKey)
+    
+    static let witchDidSave = Notification.Name(TVMPCService.witchDidSaveKey)
+    
+    static let didGetWitchVictim = Notification.Name(TVMPCService.didGetWitchVictimKey)
 }

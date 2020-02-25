@@ -36,6 +36,8 @@ class MPCPhoneViewController: UIViewController {
         
         viewModel = MPCPhoneViewModel()
         viewModel?.delegate = self
+        
+        disableAllNumbers()
     }
     
     func enableAllNumbers() {
@@ -51,6 +53,12 @@ class MPCPhoneViewController: UIViewController {
         numberCollectionView.reloadData()
     }
     
+    func reloadForWitchKillAction() {
+        guard let viewModel = viewModel else { return }
+        disabledItems = viewModel.victimNumbers
+            .compactMap { $0 - 1 }
+        numberCollectionView.reloadData()
+    }
 }
 
 extension MPCPhoneViewController: UICollectionViewDataSource {
@@ -59,7 +67,7 @@ extension MPCPhoneViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return viewModel?.numberOfPlayers ?? 9
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -67,6 +75,14 @@ extension MPCPhoneViewController: UICollectionViewDataSource {
         
         cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
         cell.numberLabel.text = "\(indexPath.item + 1)"
+        
+        let tintColor: UIColor = disabledItems.contains(indexPath.item) ? .red : .green
+        cell.stateImageView.tintColor = tintColor
+        
+        let stateImageName = disabledItems.contains(indexPath.item) ? numberDisabledImageName : numberEnabledImageName
+        cell.stateImageView.image = UIImage(named: stateImageName)?.withRenderingMode(.alwaysTemplate)
+        
+        cell.isUserInteractionEnabled = !disabledItems.contains(indexPath.item)
         
         return cell
     }
@@ -92,6 +108,7 @@ extension MPCPhoneViewController: UICollectionViewDelegateFlowLayout {
 extension MPCPhoneViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("did select: \(indexPath)")
+        viewModel?.didSelectNumber(number: indexPath.item)
     }
 }
 
@@ -101,12 +118,60 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
         yourCharacterLabel.text = String(format: "Your character is %@", title)
     }
     
-    func shouldDisableNumbers() {
-        
+    func shouldDisableNumbers(range: MPCPhoneViewModel.effectNumberRange) {
+        switch range {
+        case .all:
+            disabledItems.removeAll()
+            let total = viewModel?.numberOfPlayers ?? 9
+            
+            for i in 0..<total {
+                disabledItems.append(i)
+            }
+            
+            numberCollectionView.reloadData()
+            
+        case .part(let numbers):
+            disabledItems.removeAll()
+            
+            numbers.forEach {
+                disabledItems.append($0)
+            }
+            
+            DispatchQueue.main.async { [unowned self] in
+                self.numberCollectionView.reloadData()
+            }
+        }
     }
     
-    func shouldEnableNumbers() {
+    func shouldShowWitchSaveAlert(number: Int) {
+        let alertController = UIAlertController(title: "要救嗎？", message: "剛剛被殺的是 \(number) 號", preferredStyle: .alert)
+        let saveAction = UIAlertAction(title: "救", style: .default) { [weak self] (_) in
+            self?.viewModel?.witchSavesVictimAction(witchSaves: true)
+        }
         
+        let notSaveAction = UIAlertAction(title: "不救", style: .destructive) { [weak self] (_) in
+            self?.viewModel?.witchSavesVictimAction(witchSaves: false)
+        }
+        
+        alertController.addAction(saveAction)
+        alertController.addAction(notSaveAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func shouldShowWitchKillsOrNotAlert() {
+        let alertController = UIAlertController(title: "要使用毒藥嗎?", message: "要使用毒藥的話，請按下使用後，利用號碼來選擇對象", preferredStyle: .alert)
+        
+        let yesAction = UIAlertAction(title: "使用", style: .destructive) { [weak self] (_) in
+            self?.reloadForWitchKillAction()
+        }
+        
+        let noAction = UIAlertAction(title: "不使用", style: .default) { [weak self] (_) in
+            self?.viewModel?.witchNotKill()
+        }
+        
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 

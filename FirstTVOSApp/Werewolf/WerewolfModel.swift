@@ -14,7 +14,10 @@ enum WerewolfStage: Int, CaseIterable {
     case werewolfOpensEyes      = 1
     case werewolfDecidesVictim  = 2
     case werewolfClosesEyes     = 3
-    
+    case witchOpenEyes          = 4
+    case showWitchVictimMessage = 5
+    case witchKillsOrNot        = 6
+    case witchClosesEyes        = 7
     
     func getScript() -> String {
         switch self {
@@ -26,6 +29,15 @@ enum WerewolfStage: Int, CaseIterable {
             return "請輸入狼人要殺的號碼"
         case .werewolfClosesEyes:
             return "狼人請閉眼"
+        case .witchOpenEyes:
+            return "女巫請睜眼"
+        case .showWitchVictimMessage:
+            return "被狼人殺害的號碼已經傳送給女巫，女巫要救嗎"
+        case .witchKillsOrNot:
+            return "要使用毒藥嗎"
+        case .witchClosesEyes:
+            return "女巫請閉眼"
+        
         default:
             return ""
         }
@@ -47,8 +59,8 @@ enum WerewolfGameMode {
         case .people6:
             var characters = [WerewolfSpecies]()
             for i in 0..<2 {
-                characters.append(.villager(count: i))
                 characters.append(.werewolf(count: i))
+                characters.append(.villager(count: i))
             }
             characters.append(.witch)
             characters.append(.forecaster)
@@ -178,6 +190,7 @@ protocol WerewolfCharacteristic {
     var group: WerewolfGroup { get set }
     var number: Int { get set }
     var superpower: [WerewolfSuperpower] { get set }
+    var isAlive: Bool { get set }
 }
 
 struct WerewolfCharacter: WerewolfCharacteristic {
@@ -185,12 +198,14 @@ struct WerewolfCharacter: WerewolfCharacteristic {
     var group: WerewolfGroup
     var number: Int
     var superpower: [WerewolfSuperpower]
+    var isAlive: Bool
     
     init(species: WerewolfSpecies, number: Int) {
         self.species = species
         self.group = species.getGroup()
         self.number = number
         self.superpower = species.getSuperpowers()
+        self.isAlive = true
     }
     
     func isVillager() -> Bool {

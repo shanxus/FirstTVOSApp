@@ -31,7 +31,10 @@ class WerewolfDashboardViewModel: NSObject {
     func setGameMode(as mode: WerewolfGameMode) {
         werewolfService = WerewolfService(mode: mode)
         werewolfService?.delegate = self
-        delegate?.targetCompetitorNumberDidChange()
+        
+        DispatchQueue.main.async {
+            self.delegate?.targetCompetitorNumberDidChange()
+        }
     }
     
     func StartBrowsingPeers() {
@@ -42,7 +45,7 @@ class WerewolfDashboardViewModel: NSObject {
         
         #if DEBUG
         
-        if (tvMPCService?.connectedPeerIDs.count ?? 0) > 0 {
+        if (tvMPCService?.connectedPeerIDs.count ?? 0) > 1 {
             print("[start game]")
             werewolfService?.startGame()
         }
@@ -69,14 +72,13 @@ class WerewolfDashboardViewModel: NSObject {
 }
 
 extension WerewolfDashboardViewModel: TVMPCServiceDelegate {
+    
     func connectedPeersDidChange() {
-        delegate?.dataSourceDidUpdate()
+        DispatchQueue.main.async {
+            self.delegate?.dataSourceDidUpdate()
+        }
         
         startGameFlowIfNeeded()
-    }
-    
-    func didReceiveAllHandShakeMessages() {
-        werewolfService?.startNextFlow()
     }
 }
 
@@ -86,7 +88,15 @@ extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
         tvMPCService?.sendCharacterInfoToClients(characters)
     }
     
-    func didWaitForWerewolfToDecideVictim() {
-        tvMPCService?.notifyWerewolfToKill()
+    func didWaitForWerewolfToDecideNextVictim(currentVictimNumbers: [Int]) {
+        tvMPCService?.notifyWerewolfToKill(currentVictimNumbers: currentVictimNumbers)
+    }
+    
+    func didWaitForWitchToSave(number: Int) {
+        tvMPCService?.notifyWitchToSave(number: number)
+    }
+    
+    func didWaitForWitchToKill(currentVictimNumbers: [Int]) {
+        tvMPCService?.notifyWitchToKill(currentVictimNumbers: currentVictimNumbers)
     }
 }
