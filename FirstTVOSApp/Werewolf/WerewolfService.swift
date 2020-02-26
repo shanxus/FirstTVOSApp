@@ -10,20 +10,25 @@ import Foundation
 import AVFoundation
 
 protocol WerewolfServiceDelegate: class {
-    func didCreate(characters: [WerewolfCharacter])
+    func shouldUpdateCharacters(characters: [WerewolfCharacter])
+    
+    func didCreate(characters: inout [WerewolfCharacter])
     func didWaitForWerewolfToDecideNextVictim(currentVictimNumbers: [Int])
     
-    func didWaitForWitchToSave(number: Int)
-    func didWaitForWitchToKill(currentVictimNumbers: [Int])
+    func didWaitForWitchToSave()
+    func didWaitForWitchToKill(characters: [WerewolfCharacter])
+    
+    func willWaitForecasterToCheck(characters: [WerewolfCharacter])
 }
 
 class WerewolfService: NSObject {
             
-    private var characters: [WerewolfCharacter] = []
+    private(set) var characters: [WerewolfCharacter] = []
     private var victimNumbers: [Int] = []
     
     private var synthesizer: AVSpeechSynthesizer?
     
+    private var round: Int = 1
     private var currentStage: Int = -1
     
     private(set) var gameMode: WerewolfGameMode
@@ -45,7 +50,9 @@ class WerewolfService: NSObject {
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleGotWitchSaveResult), name: NSNotification.Name.didGetWitchSaveResult, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleGotWitchVictim), name: NSNotification.Name.didGetWitchVictim, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleGotWitchVictim(_:)), name: NSNotification.Name.didGetWitchVictim, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleGotForecasterCheckedTarget(_:)), name: NSNotification.Name.didGetForecasterCheckedTarget, object: nil)
     }
     
     func startGame() {
@@ -68,14 +75,14 @@ class WerewolfService: NSObject {
         
         characters.append(werewolf1)
         characters.append(witch)
-        characters.append(werewolf2)
         characters.append(forecaster)
+        characters.append(werewolf2)        
         characters.append(villager1)
         characters.append(villager2)
         
         self.characters = characters
         
-        delegate?.didCreate(characters: characters)
+        delegate?.didCreate(characters: &self.characters)
         
         /* Release */
         
@@ -101,6 +108,7 @@ class WerewolfService: NSObject {
     
     @objc
     private func handleHandshake(_ notification: NSNotification) {
+        
         startNextFlow(forceToIncreaseStage: false)
     }
     
@@ -116,25 +124,34 @@ class WerewolfService: NSObject {
         
         guard let index = firstIndex else { return }
         
-        characters[index].isAlive = false
+        characters[index].setKilled(at: round)
 
         victimNumbers.append(characters[index].number)
         
         startNextFlow(forceToIncreaseStage: true)
     }
     
-    /// Remove superpower.
     @objc
     private func handleWitchDidSave() {
-        let firstIndex = characters.firstIndex {
+        let witchFirstIndex = characters.firstIndex {
             $0.isWitch()
         }
         
-        guard let index = firstIndex else { return }
-        
-        characters[index].superpower.removeAll {
+        guard let witchIndex = witchFirstIndex else { return }
+    
+        // Remove superpower.
+        characters[witchIndex].superpowers.removeAll {
             $0 == .savePeople
         }
+        
+        let firstSavedIndex = characters.firstIndex {
+            $0.killedRound == currentStage
+        }
+        
+        guard let savedIndex = firstSavedIndex else { return }
+        
+        // Set character saved.
+        characters[savedIndex].setSaved()
     }
     
     @objc
@@ -143,20 +160,41 @@ class WerewolfService: NSObject {
     }
     
     @objc
-    private func handleGotWitchVictim() {
-        // Remove superpower.
-        let firstIndex = characters.firstIndex {
+    private func handleGotWitchVictim(_ notification: NSNotification) {
+        
+        let witchFirstIndex = characters.firstIndex {
             $0.isWitch()
         }
         
-        guard let index = firstIndex else { return }
+        guard let witchIndex = witchFirstIndex else { return }
         
-        characters[index].superpower.removeAll {
+        // Remove superpower.
+        characters[witchIndex].superpowers.removeAll {
             $0 == .killPeople
         }
         
+        guard let userInfo = notification.userInfo as? [String : Any] else { return }
+        
+        guard let witchKilledNumber = userInfo[TVMPCService.didGetWitchVictimKey] as? Int else { return }
+        
+        let targetIndex = characters.firstIndex {
+            $0.number == witchKilledNumber
+        }
+        
+        guard let victimIndex = targetIndex else { return }
+        
+        print("victimIndex: \(victimIndex)")
+        
+        // Set character as killed.
+        characters[victimIndex].setKilled(at: round)
+        
         // Start next flow.
         startNextFlow(forceToIncreaseStage: true)
+    }
+    
+    @objc
+    private func handleGotForecasterCheckedTarget(_ notification: NSNotification) {
+        // Should fix the stage that witch selected the victim.
     }
     
     func startNextFlow(forceToIncreaseStage: Bool) {
@@ -200,9 +238,19 @@ class WerewolfService: NSObject {
             let stageScript = WerewolfStage.witchOpenEyes.getScript()
             speech(for: stageScript)
             
+        } else if currentStage == WerewolfStage.witchWillSave.rawValue {
+            
+            let stageScript = WerewolfStage.witchWillSave.getScript()
+            speech(for: stageScript)
+            
         } else if currentStage == WerewolfStage.showWitchVictimMessage.rawValue {
             
             let stageScript = WerewolfStage.showWitchVictimMessage.getScript()
+            speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.witchWillKill.rawValue {
+            
+            let stageScript = WerewolfStage.witchWillKill.getScript()
             speech(for: stageScript)
             
         } else if currentStage == WerewolfStage.witchKillsOrNot.rawValue {
@@ -214,6 +262,17 @@ class WerewolfService: NSObject {
             
             let stageScript = WerewolfStage.witchClosesEyes.getScript()
             speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.forecasterOpensEyes.rawValue {
+            
+            let stageScript = WerewolfStage.forecasterOpensEyes.getScript()
+            speech(for: stageScript)
+            
+            // Should pass information of victims to TV side (especially for the last round).
+            
+        } else if currentStage == WerewolfStage.forecasterChecks.rawValue {
+            
+            // Should notify the forecaster to check on the phone side.
             
         }
     }
@@ -240,7 +299,9 @@ extension WerewolfService: AVSpeechSynthesizerDelegate {
             
         } else if currentStage == WerewolfStage.werewolfDecidesVictim.rawValue {
             
-            delegate?.didWaitForWerewolfToDecideNextVictim(currentVictimNumbers: victimNumbers)
+            DispatchQueue.main.async {
+                self.delegate?.didWaitForWerewolfToDecideNextVictim(currentVictimNumbers: self.victimNumbers)
+            }
             
         } else if currentStage == WerewolfStage.werewolfClosesEyes.rawValue {
             
@@ -257,21 +318,53 @@ extension WerewolfService: AVSpeechSynthesizerDelegate {
             }
                         
             currentStage += 1
-            delegate?.didWaitForWitchToSave(number: lastVictim)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.startNextFlow(forceToIncreaseStage: false)
             }
             
+        } else if currentStage == WerewolfStage.witchWillSave.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.shouldUpdateCharacters(characters: self.characters)
+            }
+            
         } else if currentStage == WerewolfStage.showWitchVictimMessage.rawValue {
             
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.didWaitForWitchToSave()
+            }
             
+        } else if currentStage == WerewolfStage.witchWillKill.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.shouldUpdateCharacters(characters: self.characters)
+            }
             
         } else if currentStage == WerewolfStage.witchKillsOrNot.rawValue {
-            
-            delegate?.didWaitForWitchToKill(currentVictimNumbers: victimNumbers)
+                        
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.didWaitForWitchToKill(characters: self.characters)
+            }
             
         } else if currentStage == WerewolfStage.witchClosesEyes.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.startNextFlow(forceToIncreaseStage: false)
+            }
+            
+        } else if currentStage == WerewolfStage.forecasterOpensEyes.rawValue {
+            
+            currentStage += 1
+            delegate?.willWaitForecasterToCheck(characters: characters)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.startNextFlow(forceToIncreaseStage: false)
+            }
             
         }
     }

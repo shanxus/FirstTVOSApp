@@ -11,13 +11,21 @@ import Foundation
 enum WerewolfStage: Int, CaseIterable {
     case preparingStage         = -1
     case everyoneClosesEyes     = 0
+    
     case werewolfOpensEyes      = 1
     case werewolfDecidesVictim  = 2
     case werewolfClosesEyes     = 3
+    
     case witchOpenEyes          = 4
-    case showWitchVictimMessage = 5
-    case witchKillsOrNot        = 6
-    case witchClosesEyes        = 7
+    case witchWillSave          = 5
+    case showWitchVictimMessage = 6
+    case witchWillKill          = 7
+    case witchKillsOrNot        = 8
+    case witchClosesEyes        = 9
+    
+    case forecasterOpensEyes    = 10
+    case forecasterChecks       = 11
+    case forecasterClosesEyes   = 12
     
     func getScript() -> String {
         switch self {
@@ -31,13 +39,22 @@ enum WerewolfStage: Int, CaseIterable {
             return "狼人請閉眼"
         case .witchOpenEyes:
             return "女巫請睜眼"
+        case .witchWillSave:
+            return "傳送狼人殺害的號碼給女巫"
         case .showWitchVictimMessage:
-            return "被狼人殺害的號碼已經傳送給女巫，女巫要救嗎"
+            return "女巫要救嗎"
+        case .witchWillKill:
+            return ""
         case .witchKillsOrNot:
             return "要使用毒藥嗎"
         case .witchClosesEyes:
             return "女巫請閉眼"
-        
+        case .forecasterOpensEyes:
+            return "預言家請睜眼"
+        case .forecasterChecks:
+            return "預言家請選擇查驗對象"
+        case .forecasterClosesEyes:
+            return "預言家請閉眼"
         default:
             return ""
         }
@@ -70,7 +87,7 @@ enum WerewolfGameMode {
     }
 }
 
-enum WerewolfSuperpower {
+enum WerewolfSuperpower: String, Codable {
     case none   // for villager.
     case killPeople // for werewolf and witch.
     case savePeople // for witch.
@@ -180,32 +197,101 @@ extension WerewolfSpecies: RawRepresentable {
     }
 }
 
-enum WerewolfGroup {
+extension WerewolfSpecies: Codable {
+    
+    private
+    enum CodingKeys: String, CodingKey {
+        case villager
+        case witch
+        case forecaster
+        case hunter
+        case knight
+        case werewolf
+    }
+    
+    enum WerewolfSpeciesCodingError: Error {
+        case decoding(error: String)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        if let value = try? values.decode(Int.self, forKey: .villager) {
+            self = .villager(count: value)
+            return
+        }
+        
+        if let value = try? values.decode(Int.self, forKey: .werewolf) {
+            self = .werewolf(count: value)
+            return
+        }
+        
+        if let _ = try? values.decodeNil(forKey: .forecaster) {
+            self = .forecaster
+            return
+        }
+        
+        if let _ = try? values.decodeNil(forKey: .hunter) {
+            self = .hunter
+            return
+        }
+        
+        if let _ = try? values.decodeNil(forKey: .knight) {
+            self = .knight
+            return
+        }
+        
+        if let _ = try? values.decodeNil(forKey: .witch) {
+            self = .witch
+            return
+        }
+        
+        throw WerewolfSpeciesCodingError.decoding(error: "Decoding error of WerewolfSpecies")
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .villager(let count):
+            try container.encode(count, forKey: .villager)
+        case .witch:
+            try container.encodeNil(forKey: .witch)
+        case .forecaster:
+            try container.encodeNil(forKey: .forecaster)
+        case .hunter:
+            try container.encodeNil(forKey: .hunter)
+        case .knight:
+            try container.encodeNil(forKey: .knight)
+        case .werewolf(let count):
+            try container.encode(count, forKey: .werewolf)
+        }
+    }
+}
+
+enum WerewolfGroup: String, Codable {
     case good
     case bad
 }
 
-protocol WerewolfCharacteristic {
-    var species: WerewolfSpecies { get set }
-    var group: WerewolfGroup { get set }
-    var number: Int { get set }
-    var superpower: [WerewolfSuperpower] { get set }
-    var isAlive: Bool { get set }
-}
-
-struct WerewolfCharacter: WerewolfCharacteristic {
+struct WerewolfCharacter: Codable {
     var species: WerewolfSpecies
     var group: WerewolfGroup
     var number: Int
-    var superpower: [WerewolfSuperpower]
-    var isAlive: Bool
+    var superpowers: [WerewolfSuperpower] = []
+    var isAlive: Bool = true
+    var killedRound: Int?
+    var deviceName: String = ""
+    var currentRound: Int
+    var isIdentityExposed: Bool = false
     
     init(species: WerewolfSpecies, number: Int) {
         self.species = species
         self.group = species.getGroup()
         self.number = number
-        self.superpower = species.getSuperpowers()
+        self.superpowers = species.getSuperpowers()
         self.isAlive = true
+        self.killedRound = nil
+        self.currentRound = 1
     }
     
     func isVillager() -> Bool {
@@ -230,5 +316,45 @@ struct WerewolfCharacter: WerewolfCharacteristic {
     
     func isWerewolf() -> Bool {
         return species.rawValue.0 == 5
+    }
+    
+    func canBeSavedByWitch() -> Bool {
+        if isAlive {
+            return false
+        } else {
+            guard let killedRound = killedRound else { return false }
+            return killedRound == currentRound
+        }
+    }
+    
+    func canBeKilledByWitch() -> Bool {
+        return isAlive
+    }
+    
+    func canBeForecasted() -> Bool {
+        if isAlive {
+            return true
+        } else {
+            guard let killedRound = killedRound else { return true }
+            return !(killedRound < currentRound)
+        }
+    }
+    
+    mutating func setKilled(at round: Int) {
+        self.isAlive = false
+        self.killedRound = round
+    }
+    
+    mutating func setSaved() {
+        self.isAlive = true
+        self.killedRound = nil
+    }
+    
+    mutating func remove(superpower: WerewolfSuperpower) {
+        if self.superpowers.contains(superpower) {
+            self.superpowers.removeAll {
+                $0 == superpower
+            }
+        }
     }
 }

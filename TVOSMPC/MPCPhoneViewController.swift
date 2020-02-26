@@ -52,13 +52,6 @@ class MPCPhoneViewController: UIViewController {
         }
         numberCollectionView.reloadData()
     }
-    
-    func reloadForWitchKillAction() {
-        guard let viewModel = viewModel else { return }
-        disabledItems = viewModel.victimNumbers
-            .compactMap { $0 - 1 }
-        numberCollectionView.reloadData()
-    }
 }
 
 extension MPCPhoneViewController: UICollectionViewDataSource {
@@ -162,7 +155,7 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
         let alertController = UIAlertController(title: "要使用毒藥嗎?", message: "要使用毒藥的話，請按下使用後，利用號碼來選擇對象", preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "使用", style: .destructive) { [weak self] (_) in
-            self?.reloadForWitchKillAction()
+            
         }
         
         let noAction = UIAlertAction(title: "不使用", style: .default) { [weak self] (_) in
@@ -171,6 +164,17 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
         
         alertController.addAction(yesAction)
         alertController.addAction(noAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func shouldShowForecasterCanCheckAlert() {
+        let alertController = UIAlertController(title: "確認玩家身份", message: "點擊號碼來確認該位玩家身份", preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "好", style: .destructive) { [weak self] (_) in
+            
+        }
+        
+        alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)
     }
 }

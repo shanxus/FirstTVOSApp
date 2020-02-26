@@ -45,7 +45,7 @@ class WerewolfDashboardViewModel: NSObject {
         
         #if DEBUG
         
-        if (tvMPCService?.connectedPeerIDs.count ?? 0) > 1 {
+        if (tvMPCService?.connectedPeerIDs.count ?? 0) > 2 {
             print("[start game]")
             werewolfService?.startGame()
         }
@@ -83,20 +83,42 @@ extension WerewolfDashboardViewModel: TVMPCServiceDelegate {
 }
 
 extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
-    func didCreate(characters: [WerewolfCharacter]) {
-        
+    
+    func shouldUpdateCharacters(characters: [WerewolfCharacter]) {
         tvMPCService?.sendCharacterInfoToClients(characters)
+    }
+    
+    func didCreate(characters: inout [WerewolfCharacter]) {
+        
+        guard let tvMPCService = tvMPCService else { return }
+        let peerDisplayNames = tvMPCService.connectedPeerIDs.compactMap { $0.displayName }
+        
+        for (index, name) in peerDisplayNames.enumerated() {
+
+            characters[index].number = index + 1
+            characters[index].deviceName = name
+        }
+        
+        tvMPCService.sendCharacterInfoToClients(characters)
     }
     
     func didWaitForWerewolfToDecideNextVictim(currentVictimNumbers: [Int]) {
         tvMPCService?.notifyWerewolfToKill(currentVictimNumbers: currentVictimNumbers)
     }
     
-    func didWaitForWitchToSave(number: Int) {
-        tvMPCService?.notifyWitchToSave(number: number)
+    func didWaitForWitchToSave() {
+        tvMPCService?.notifyWitchToSave()
     }
     
-    func didWaitForWitchToKill(currentVictimNumbers: [Int]) {
-        tvMPCService?.notifyWitchToKill(currentVictimNumbers: currentVictimNumbers)
+    func didWaitForWitchToKill(characters: [WerewolfCharacter]) {
+        
+        tvMPCService?.notifyWitchToKill()
+    }
+    
+    func willWaitForecasterToCheck(characters: [WerewolfCharacter]) {
+        
+        // Update characters before notify phone side.
+        tvMPCService?.sendCharacterInfoToClients(characters)
+        tvMPCService?.notifyForecasterBeReadyToCheck()
     }
 }

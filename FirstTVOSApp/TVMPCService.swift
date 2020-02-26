@@ -47,29 +47,10 @@ class TVMPCService: NSObject {
     
     func sendCharacterInfoToClients(_ characters: [WerewolfCharacter]) {
         
-        var peersDictionary: [String : Any] = [:]
-        
-        for (index, peer) in connectedPeerIDs.enumerated() {
-            var propertyDictionary: [String : Any] = [:]
-
-            let character = characters[index]
-
-            propertyDictionary[TVMPCService.characterNumberKey] = character.number
-            propertyDictionary[TVMPCService.characterSpeciesRawValueFirstKey] = character.species.rawValue.0
-            propertyDictionary[TVMPCService.characterSpeciesRawValueSecondKey] = character.species.rawValue.1
-
-            peersDictionary[peer.displayName] = propertyDictionary
+        if let data = try? JSONEncoder().encode(characters) {
+            print("[sendCharacterInfoToClients]")
+            send(data: data, to: connectedPeerIDs)
         }
-        
-        let dictionary: [String : Any] = [TVMPCService.characterInfoKey : peersDictionary]
-        
-        guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted) else {
-            // TODO: Should show local notification.
-            print("fail to serialize the object to data.")
-            return
-        }
-        
-        send(data: data, to: connectedPeerIDs)
     }
     
     private func handleHandShake(for displayName: String) {
@@ -108,6 +89,12 @@ class TVMPCService: NSObject {
         
         let userInfo = [TVMPCService.didGetWitchVictimKey : targetNumber]
         NotificationCenter.default.post(name: NSNotification.Name.didGetWitchVictim, object: nil, userInfo: userInfo)
+    }
+    
+    private func handleForecasterDidCheck(number: Int) {
+        
+        let userInfo = [TVMPCService.didGetForecasterCheckedTargetKey : number]
+        NotificationCenter.default.post(name: NSNotification.Name.didGetForecasterCheckedTarget, object: nil, userInfo: userInfo)
     }
     
     private func unwrapReceivedData(_ data: Data) {
@@ -152,6 +139,16 @@ class TVMPCService: NSObject {
             }
             
             handleWitchKills(targetNumber: targetNumber)
+            
+        } else if firstKey == TVMPCService.forecasterDidCheckTargetKey {
+            print("got forecasterDidCheckTargetKey")
+            
+            guard let targetNumber = dictionary[TVMPCService.forecasterDidCheckTargetKey] as? Int else {
+                print("Failed to unwrap checked target")
+                return
+            }
+            
+            handleForecasterDidCheck(number: targetNumber)
         }
     }
     
@@ -169,10 +166,10 @@ class TVMPCService: NSObject {
         send(data: data, to: connectedPeerIDs)
     }
     
-    func notifyWitchToSave(number: Int) {
+    func notifyWitchToSave() {
         print("[notifyWitchToSave]")
         
-        let message = [TVMPCService.witchSavesOrNotKey : number]
+        let message = [TVMPCService.witchSavesOrNotKey : TVMPCService.witchSavesOrNotKey]
         
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             return
@@ -181,17 +178,30 @@ class TVMPCService: NSObject {
         send(data: data, to: connectedPeerIDs)
     }
     
-    func notifyWitchToKill(currentVictimNumbers: [Int]) {
+    func notifyWitchToKill() {
         
-        let victimsString = currentVictimNumbers.map { String($0) }.joined(separator: ",")
-        
-        let message = [TVMPCService.witchKillsOrNotKey : victimsString]
+        let message = [TVMPCService.witchKillsOrNotKey : TVMPCService.witchKillsOrNotKey]
         
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             return
         }
         
         send(data: data, to: connectedPeerIDs)
+    }
+    
+    func notifyForecasterBeReadyToCheck() {
+        
+        let message = [TVMPCService.forecasterCanCheckKey : TVMPCService.forecasterCanCheckKey]
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
+            print("Failed to get data for forecasterWillCheckKey")
+            return
+        }
+        
+        send(data: data, to: connectedPeerIDs)
+    }
+    
+    func notifyForecasterToCheck() {
+        
     }
     
     func send(data: Data, to peers: [MCPeerID]) {
@@ -282,6 +292,12 @@ extension TVMPCService {
     static let witchKillTargetKey = "witchKillTargetKey"
     
     static let didGetWitchVictimKey = "didGetWitchVictimKey"
+    
+    static let forecasterCanCheckKey = "forecasterCanCheckKey"
+    
+    static let forecasterDidCheckTargetKey = "forecasterDidCheckTargetKey"
+    
+    static let didGetForecasterCheckedTargetKey = "didGetForecasterCheckedTargetKey"
 }
 
 extension Notification.Name {
@@ -294,4 +310,6 @@ extension Notification.Name {
     static let witchDidSave = Notification.Name(TVMPCService.witchDidSaveKey)
     
     static let didGetWitchVictim = Notification.Name(TVMPCService.didGetWitchVictimKey)
+    
+    static let didGetForecasterCheckedTarget = Notification.Name(TVMPCService.didGetForecasterCheckedTargetKey)
 }
