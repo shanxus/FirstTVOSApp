@@ -19,6 +19,10 @@ protocol MPCPhoneViewModelDelegate: class {
     func shouldShowWitchKillsOrNotAlert()
     
     func shouldShowForecasterCanCheckAlert()
+    
+    func didGetForecastedResult(with title: String)
+    
+    func dayDidBreak(victim title: String)
 }
 
 class MPCPhoneViewModel: NSObject {
@@ -40,6 +44,8 @@ class MPCPhoneViewModel: NSObject {
     private(set) var numberOfPlayers: Int? = 6
     
     private(set) var victimNumbers: [Int] = []
+    
+    private var lastExposedIdentityNumber: Int?
     
     override init() {
         super.init()
@@ -80,7 +86,15 @@ class MPCPhoneViewModel: NSObject {
             mpcService?.sendWitchKilledTarget(targetNumber: number + 1)
         } else if character.isForecaster() {
             
-            mpcService?.sendForecastedTarget(targetNumber: number + 1)
+            let targetNumber = number + 1
+            
+            lastExposedIdentityNumber = targetNumber
+            
+            let firstTarget = characters.filter { $0.number == targetNumber }.first
+            
+            guard let title = firstTarget?.species.getTitle() else { return }
+            
+            delegate?.didGetForecastedResult(with: title)
         }
     }
     
@@ -96,6 +110,16 @@ class MPCPhoneViewModel: NSObject {
     
     func witchNotKill() {
         
+    }
+    
+    func forecasterDoneAction() {
+        guard let lastExposedIdentityNumber = lastExposedIdentityNumber else { return }
+        
+        mpcService?.sendForecastedTarget(targetNumber: lastExposedIdentityNumber)
+    }
+    
+    func daybreakDoneAction() {
+        mpcService?.sendHandShakeMessage()
     }
 }
 
@@ -162,6 +186,25 @@ extension MPCPhoneViewModel: PhoneMPCServiceDelegate {
         DispatchQueue.main.async {
             self.delegate?.shouldDisableNumbers(range: .part(numbers: charactersThatCanNotBeForecasted))
             self.delegate?.shouldShowForecasterCanCheckAlert()
+        }
+    }
+    
+    func didReceiveDayDidBreak() {
+        
+        guard let currentRound = characters.first?.currentRound else { return }
+        
+        let firstVictim = characters.filter {
+            guard let killedRound = $0.killedRound else { return false }
+            return killedRound == currentRound
+        }.first
+        
+        guard let victim = firstVictim else { return }
+        
+        let deadCharacterNumbers = characters.filter { !$0.isAlive }.map { $0.number - 1 }
+        
+        DispatchQueue.main.async {
+            self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
+            self.delegate?.dayDidBreak(victim: victim.species.getTitle())
         }
     }
 }

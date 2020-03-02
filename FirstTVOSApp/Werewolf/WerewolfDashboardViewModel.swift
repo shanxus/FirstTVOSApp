@@ -115,10 +115,12 @@ extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
         tvMPCService?.notifyWitchToKill()
     }
     
-    func willWaitForecasterToCheck(characters: [WerewolfCharacter]) {
+    func didWaitForecasterToCheck(characters: [WerewolfCharacter]) {
         
-        // Update characters before notify phone side.
-        tvMPCService?.sendCharacterInfoToClients(characters)
-        tvMPCService?.notifyForecasterBeReadyToCheck()
+        tvMPCService?.notifyForecasterToCheck()
+    }
+    
+    func dayDidBreak() {
+        tvMPCService?.notifyDaybreak()
     }
 }

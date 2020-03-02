@@ -17,6 +17,7 @@ protocol PhoneMPCServiceDelegate: class {
     func didReceiveWitchKillsOrNot()
     
     func didReceiveForecasterCanCheck()
+    func didReceiveDayDidBreak()
 }
 
 class PhoneMPCService: NSObject {
@@ -79,6 +80,9 @@ class PhoneMPCService: NSObject {
         } else if firstKey == TVMPCService.forecasterCanCheckKey {
             showLocalNotification(title: "Got forecasterWillCheckKey", subtitle: "", body: "")
             handleReceivingForecasterCanCheck()
+        } else if firstKey == TVMPCService.dayDidBreakKey {
+            showLocalNotification(title: "Day did break", subtitle: "", body: "")
+            handleReceivingDayDidBreak()
         }
     }
     
@@ -107,7 +111,11 @@ class PhoneMPCService: NSObject {
         }        
     }
     
-    private func sendHandShakeMessage() {
+    private func handleReceivingDayDidBreak() {
+        delegate?.didReceiveDayDidBreak()
+    }
+    
+    func sendHandShakeMessage() {
         let message = [ TVMPCService.MPCHandshakeKey : peerID.displayName]
         
         guard let encodedMessage = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {

@@ -18,7 +18,9 @@ protocol WerewolfServiceDelegate: class {
     func didWaitForWitchToSave()
     func didWaitForWitchToKill(characters: [WerewolfCharacter])
     
-    func willWaitForecasterToCheck(characters: [WerewolfCharacter])
+    func didWaitForecasterToCheck(characters: [WerewolfCharacter])
+    
+    func dayDidBreak()
 }
 
 class WerewolfService: NSObject {
@@ -189,12 +191,20 @@ class WerewolfService: NSObject {
         characters[victimIndex].setKilled(at: round)
         
         // Start next flow.
-        startNextFlow(forceToIncreaseStage: true)
+        startNextFlow(forceToIncreaseStage: false)
     }
     
     @objc
     private func handleGotForecasterCheckedTarget(_ notification: NSNotification) {
-        // Should fix the stage that witch selected the victim.
+        guard let userInfo = notification.userInfo as? [String : Any] else { return }
+        guard let targetNumber = userInfo[TVMPCService.didGetForecasterCheckedTargetKey] as? Int else { return }
+        
+        let firstIndex = characters.firstIndex { $0.number == targetNumber }
+        guard let index = firstIndex else { return }
+        
+        characters[index].isIdentityExposed = true
+        
+        startNextFlow(forceToIncreaseStage: false)
     }
     
     func startNextFlow(forceToIncreaseStage: Bool) {
@@ -269,11 +279,37 @@ class WerewolfService: NSObject {
             speech(for: stageScript)
             
             // Should pass information of victims to TV side (especially for the last round).
+        } else if currentStage == WerewolfStage.forecasterWillCheck.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.shouldUpdateCharacters(characters: self.characters)
+            }
             
         } else if currentStage == WerewolfStage.forecasterChecks.rawValue {
             
-            // Should notify the forecaster to check on the phone side.
+            let stageScript = WerewolfStage.forecasterChecks.getScript()
+            speech(for: stageScript)
             
+        } else if currentStage == WerewolfStage.forecasterClosesEyes.rawValue {
+            
+            let stageScript = WerewolfStage.forecasterClosesEyes.getScript()
+            speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.everyoneWillOpenEyes.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.shouldUpdateCharacters(characters: self.characters)
+            }
+            
+        } else if currentStage == WerewolfStage.everyoneOpensEyes.rawValue {
+            
+            let stageScript = WerewolfStage.everyoneOpensEyes.getScript()
+            speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.countdownForVoting.rawValue {
+            print("[stage to WerewolfStage.countdownForVoting]")
         }
     }
 }
@@ -361,11 +397,32 @@ extension WerewolfService: AVSpeechSynthesizerDelegate {
         } else if currentStage == WerewolfStage.forecasterOpensEyes.rawValue {
             
             currentStage += 1
-            delegate?.willWaitForecasterToCheck(characters: characters)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.startNextFlow(forceToIncreaseStage: false)
             }
             
+        } else if currentStage == WerewolfStage.forecasterWillCheck.rawValue {
+            
+        } else if currentStage == WerewolfStage.forecasterChecks.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.didWaitForecasterToCheck(characters: self.characters)
+            }
+        } else if currentStage == WerewolfStage.forecasterClosesEyes.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.startNextFlow(forceToIncreaseStage: false)
+            }
+        } else if currentStage == WerewolfStage.everyoneWillOpenEyes.rawValue {
+            
+        } else if currentStage == WerewolfStage.everyoneOpensEyes.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.dayDidBreak()
+            }
         }
     }
 }

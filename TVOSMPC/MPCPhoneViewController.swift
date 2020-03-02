@@ -170,8 +170,28 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
     func shouldShowForecasterCanCheckAlert() {
         let alertController = UIAlertController(title: "確認玩家身份", message: "點擊號碼來確認該位玩家身份", preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: "好", style: .destructive) { [weak self] (_) in
+        let okAction = UIAlertAction(title: "好", style: .destructive) { (_) in
             
+        }
+        
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func didGetForecastedResult(with title: String) {
+        let alertController = UIAlertController(title: "確認身份", message: "該位玩家是：\(title)", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] (_) in
+            self.viewModel?.forecasterDoneAction()
+        }
+        
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func dayDidBreak(victim title: String) {
+        let alertController = UIAlertController(title: "上一回合受害者", message: "受害者是：\(title)", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] (_) in
+            self.viewModel?.daybreakDoneAction()
         }
         
         alertController.addAction(okAction)

@@ -189,19 +189,24 @@ class TVMPCService: NSObject {
         send(data: data, to: connectedPeerIDs)
     }
     
-    func notifyForecasterBeReadyToCheck() {
-        
+    func notifyForecasterToCheck() {
         let message = [TVMPCService.forecasterCanCheckKey : TVMPCService.forecasterCanCheckKey]
+        
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
-            print("Failed to get data for forecasterWillCheckKey")
             return
         }
         
         send(data: data, to: connectedPeerIDs)
     }
     
-    func notifyForecasterToCheck() {
+    func notifyDaybreak() {
+        let message = [TVMPCService.dayDidBreakKey : TVMPCService.dayDidBreakKey]
         
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
+            return
+        }
+        
+        send(data: data, to: connectedPeerIDs)
     }
     
     func send(data: Data, to peers: [MCPeerID]) {
@@ -298,6 +303,8 @@ extension TVMPCService {
     static let forecasterDidCheckTargetKey = "forecasterDidCheckTargetKey"
     
     static let didGetForecasterCheckedTargetKey = "didGetForecasterCheckedTargetKey"
+    
+    static let dayDidBreakKey = "dayDidBreakKey"
 }
 
 extension Notification.Name {

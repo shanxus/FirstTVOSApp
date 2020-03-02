@@ -24,8 +24,19 @@ enum WerewolfStage: Int, CaseIterable {
     case witchClosesEyes        = 9
     
     case forecasterOpensEyes    = 10
-    case forecasterChecks       = 11
-    case forecasterClosesEyes   = 12
+    case forecasterWillCheck    = 11
+    case forecasterChecks       = 12
+    case forecasterClosesEyes   = 13
+    
+    // Show an alert about the victim.
+    case everyoneWillOpenEyes   = 14
+    case everyoneOpensEyes      = 15
+    
+    // Countdown for voting.
+    case countdownForVoting     = 16
+    
+    // Wait everyone to vote.
+    case vote                   = 17
     
     func getScript() -> String {
         switch self {
@@ -51,10 +62,20 @@ enum WerewolfStage: Int, CaseIterable {
             return "女巫請閉眼"
         case .forecasterOpensEyes:
             return "預言家請睜眼"
+        case .forecasterWillCheck:
+            return ""
         case .forecasterChecks:
             return "預言家請選擇查驗對象"
         case .forecasterClosesEyes:
             return "預言家請閉眼"
+        case .everyoneWillOpenEyes:
+            return ""
+        case .everyoneOpensEyes:
+            return "天亮了"
+        case .countdownForVoting:
+            return "討論一分鐘後投票"
+        case .vote:
+            return "請在手機投票兇手"
         default:
             return ""
         }
