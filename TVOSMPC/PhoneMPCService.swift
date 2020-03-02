@@ -18,6 +18,8 @@ protocol PhoneMPCServiceDelegate: class {
     
     func didReceiveForecasterCanCheck()
     func didReceiveDayDidBreak()
+    
+    func didWaitForPlayerToVote()
 }
 
 class PhoneMPCService: NSObject {
@@ -83,6 +85,9 @@ class PhoneMPCService: NSObject {
         } else if firstKey == TVMPCService.dayDidBreakKey {
             showLocalNotification(title: "Day did break", subtitle: "", body: "")
             handleReceivingDayDidBreak()
+        } else if firstKey == TVMPCService.playersCanVoteKey {
+            showLocalNotification(title: "Players can vote", subtitle: "", body: "")
+            handlePlayerCanVote()
         }
     }
     
@@ -113,6 +118,10 @@ class PhoneMPCService: NSObject {
     
     private func handleReceivingDayDidBreak() {
         delegate?.didReceiveDayDidBreak()
+    }
+    
+    private func handlePlayerCanVote() {
+        delegate?.didWaitForPlayerToVote()
     }
     
     func sendHandShakeMessage() {
@@ -165,6 +174,16 @@ class PhoneMPCService: NSObject {
     
     func sendForecastedTarget(targetNumber: Int) {
         let message = [TVMPCService.forecasterDidCheckTargetKey : targetNumber]
+            
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else { return }
+
+        guard let lastPeer = lastPeerID else { return }
+        
+        send(data: data, to: [lastPeer])
+    }
+    
+    func sendVoteTarget(targetNumber: Int) {
+        let message = [TVMPCService.playerDidVoteKey : targetNumber]
             
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else { return }
 

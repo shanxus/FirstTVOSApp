@@ -23,9 +23,16 @@ protocol MPCPhoneViewModelDelegate: class {
     func didGetForecastedResult(with title: String)
     
     func dayDidBreak(victim title: String)
+    
+    func didWaitForVote()
 }
 
 class MPCPhoneViewModel: NSObject {
+    
+    enum SelectionMode {
+        case normalFlow
+        case vote
+    }
     
     private var mpcService: PhoneMPCService?
     
@@ -46,6 +53,8 @@ class MPCPhoneViewModel: NSObject {
     private(set) var victimNumbers: [Int] = []
     
     private var lastExposedIdentityNumber: Int?
+    
+    private var mode: SelectionMode = .normalFlow
     
     override init() {
         super.init()
@@ -73,28 +82,35 @@ class MPCPhoneViewModel: NSObject {
     
     func didSelectNumber(number: Int) {
                 
-        guard let character = findSelfCharacter() else { return }
-        if character.isWerewolf() {
-            
-            mpcService?.sendKilledTarget(targetNumber: number + 1)
-            
-        } else if character.isWitch() {
-            // remove superpower
-            removeSuperpower(.killPeople)
-            
-            // notify tv.
-            mpcService?.sendWitchKilledTarget(targetNumber: number + 1)
-        } else if character.isForecaster() {
-            
-            let targetNumber = number + 1
-            
-            lastExposedIdentityNumber = targetNumber
-            
-            let firstTarget = characters.filter { $0.number == targetNumber }.first
-            
-            guard let title = firstTarget?.species.getTitle() else { return }
-            
-            delegate?.didGetForecastedResult(with: title)
+        if mode == .normalFlow {
+            guard let character = findSelfCharacter() else { return }
+            if character.isWerewolf() {
+                
+                mpcService?.sendKilledTarget(targetNumber: number + 1)
+                
+            } else if character.isWitch() {
+                // remove superpower
+                removeSuperpower(.killPeople)
+                
+                // notify tv.
+                mpcService?.sendWitchKilledTarget(targetNumber: number + 1)
+            } else if character.isForecaster() {
+                
+                let targetNumber = number + 1
+                
+                lastExposedIdentityNumber = targetNumber
+                
+                let firstTarget = characters.filter { $0.number == targetNumber }.first
+                
+                guard let title = firstTarget?.species.getTitle() else { return }
+                
+                delegate?.didGetForecastedResult(with: title)
+            }
+        } else if mode == .vote {
+            // Send selected target.
+            mpcService?.sendVoteTarget(targetNumber: number + 1)
+            // Change mode back.
+            mode = .normalFlow
         }
     }
     
@@ -120,6 +136,10 @@ class MPCPhoneViewModel: NSObject {
     
     func daybreakDoneAction() {
         mpcService?.sendHandShakeMessage()
+    }
+    
+    func beginVoting() {
+        mode = .vote
     }
 }
 
@@ -205,6 +225,15 @@ extension MPCPhoneViewModel: PhoneMPCServiceDelegate {
         DispatchQueue.main.async {
             self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
             self.delegate?.dayDidBreak(victim: victim.species.getTitle())
+        }
+    }
+    
+    func didWaitForPlayerToVote() {
+        let deadCharacterNumbers = characters.filter { !$0.isAlive }.map { $0.number - 1 }
+        
+        DispatchQueue.main.async {
+            self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
+            self.delegate?.didWaitForVote()
         }
     }
 }

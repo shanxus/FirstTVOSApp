@@ -37,6 +37,7 @@ enum WerewolfStage: Int, CaseIterable {
     
     // Wait everyone to vote.
     case vote                   = 17
+    case roundEnded             = 18
     
     func getScript() -> String {
         switch self {
@@ -76,6 +77,8 @@ enum WerewolfStage: Int, CaseIterable {
             return "討論一分鐘後投票"
         case .vote:
             return "請在手機投票兇手"
+        case .roundEnded:
+            return "回合結束"
         default:
             return ""
         }

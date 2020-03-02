@@ -13,6 +13,8 @@ class WerewolfDashboardViewController: UIViewController {
     /// Competitor list.
     @IBOutlet weak var competitorListTitleLabel: UILabel!
     @IBOutlet weak var werewolfCompetitorListTableView: UITableView!
+    @IBOutlet weak var countdownContainerView: UIView!
+    @IBOutlet weak var countdownLabel: UILabel!
     
     private var viewModel: WerewolfDashboardViewModel?
     
@@ -88,6 +90,33 @@ extension WerewolfDashboardViewController: WerewolfDashboardViewModelDelegate {
     
     func targetCompetitorNumberDidChange() {
         updateCompetitorListTitle()
+    }
+    
+    func willStartCountingDownToVote() {
+        countdownContainerView.isHidden = false
+    }
+    
+    func didUpdateCountingDownValue(as newValue: String) {
+        countdownLabel.text = newValue
+    }
+    
+    func didEndCountingDownToVote() {
+        countdownLabel.text = "end"
+        // Can show animation.
+    }
+    
+    func didGetVoteResult(result: [(Int, Int)]) {
+        
+        if result.count == 1 {
+            countdownLabel.text = "\(result.first!.0) 號玩家出局！\n\(result.first!.1)票"
+        } else {
+            
+            let playerNumbers = result.map { "\($0.1)" }
+            let joinedNumbers = playerNumbers.joined(separator: ", ")
+            
+            countdownLabel.text = "\(joinedNumbers) 玩家票數相同！\n重新投票！"
+        }
+        
     }
 }
 

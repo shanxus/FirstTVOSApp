@@ -11,6 +11,8 @@ import MultipeerConnectivity
 
 protocol TVMPCServiceDelegate: class {
     func connectedPeersDidChange()
+    
+    func didGetVoteResult(result: TVMPCService.voteResult)
 }
 
 class TVMPCService: NSObject {
@@ -30,6 +32,7 @@ class TVMPCService: NSObject {
     }
     
     private var handshakeMessages: [String] = []
+    private var voteResults: [Int] = []
     
     override init() {
         super.init()
@@ -97,6 +100,51 @@ class TVMPCService: NSObject {
         NotificationCenter.default.post(name: NSNotification.Name.didGetForecasterCheckedTarget, object: nil, userInfo: userInfo)
     }
     
+    private func handleVoteResults() {
+        
+        // target : count
+        var voteDictionary: [Int : Int] = [:]
+        
+        voteResults.forEach {
+            if let currentCount = voteDictionary[$0] {
+                voteDictionary[$0] = (currentCount + 1)
+            } else {
+                voteDictionary[$0] = 1
+            }
+        }
+        
+        let sortedDictionary = voteDictionary.sorted {
+            return $0.1 > $1.1
+        }
+        
+        guard let firstElement = sortedDictionary.first else { return }
+        
+        let filterElements = sortedDictionary.filter {
+            $0.1 == firstElement.1
+        }
+        
+        if filterElements.count == 1 {  // Got vote result.
+            let result = TVMPCService.voteResult.divorce(winner: firstElement)
+            
+            delegate?.didGetVoteResult(result: result)
+         
+            // Notify werewolf service by notification.
+            let userInfo = [TVMPCService.voteResultKey : result]
+            
+            NotificationCenter.default.post(name: NSNotification.Name.didGetVoteResult, object: nil, userInfo: userInfo)
+            
+        } else if filterElements.count > 1 {    // It's a tie. Need to vote again.
+            let result = TVMPCService.voteResult.tie(candidates: filterElements)
+            
+            delegate?.didGetVoteResult(result: result)
+            
+            // Notify werewolf service by notification.
+            let userInfo = [TVMPCService.voteResultKey : result]
+            
+            NotificationCenter.default.post(name: NSNotification.Name.didGetVoteResult, object: nil, userInfo: userInfo)
+        }
+    }
+    
     private func unwrapReceivedData(_ data: Data) {
         guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String : Any], let firstKey = dictionary.keys.first else {
             print("failed to unwrap received data")
@@ -149,6 +197,19 @@ class TVMPCService: NSObject {
             }
             
             handleForecasterDidCheck(number: targetNumber)
+        } else if firstKey == TVMPCService.playerDidVoteKey {
+            
+            print("got playerDidVoteKey")
+            
+            guard let targetNumber = dictionary[firstKey] as? Int else {
+                print("Failed to get vote target.")
+                return
+            }
+            
+            voteResults.append(targetNumber)
+            if voteResults.count == connectedPeerIDs.count {
+                handleVoteResults()
+            }
         }
     }
     
@@ -201,6 +262,16 @@ class TVMPCService: NSObject {
     
     func notifyDaybreak() {
         let message = [TVMPCService.dayDidBreakKey : TVMPCService.dayDidBreakKey]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
+            return
+        }
+        
+        send(data: data, to: connectedPeerIDs)
+    }
+    
+    func notifyToVote() {
+        let message = [TVMPCService.playersCanVoteKey : TVMPCService.playersCanVoteKey]
         
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             return
@@ -268,6 +339,12 @@ extension TVMPCService: MCNearbyServiceBrowserDelegate {
 }
 
 extension TVMPCService {
+    
+    enum voteResult {
+        case divorce(winner: (Int, Int))
+        case tie(candidates: [(Int, Int)])
+    }
+    
     static let characterInfoKey = "characterInfoKey"
     
     static let characterNumberKey = "characterNumberKey"
@@ -305,6 +382,12 @@ extension TVMPCService {
     static let didGetForecasterCheckedTargetKey = "didGetForecasterCheckedTargetKey"
     
     static let dayDidBreakKey = "dayDidBreakKey"
+    
+    static let playersCanVoteKey = "playersCanVoteKey"
+    
+    static let playerDidVoteKey = "playerDidVoteKey"
+    
+    static let voteResultKey = "voteResultKey"
 }
 
 extension Notification.Name {
@@ -319,4 +402,6 @@ extension Notification.Name {
     static let didGetWitchVictim = Notification.Name(TVMPCService.didGetWitchVictimKey)
     
     static let didGetForecasterCheckedTarget = Notification.Name(TVMPCService.didGetForecasterCheckedTargetKey)
+    
+    static let didGetVoteResult = Notification.Name(TVMPCService.voteResultKey)
 }

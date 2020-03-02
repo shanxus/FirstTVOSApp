@@ -86,12 +86,34 @@
                                         <color key="textColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pdp-wD-ocj">
+                                        <rect key="frame" x="30" y="100" width="1194" height="680"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="60" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.40000000000000002" translatesAutoresizingMaskIntoConstraints="NO" id="TrX-pv-42A">
+                                                <rect key="frame" x="30" y="30" width="1134" height="620"/>
+                                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="300"/>
+                                                <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="TrX-pv-42A" secondAttribute="trailing" constant="30" id="SDe-UD-n7v"/>
+                                            <constraint firstItem="TrX-pv-42A" firstAttribute="leading" secondItem="pdp-wD-ocj" secondAttribute="leading" constant="30" id="jRl-rc-FBP"/>
+                                            <constraint firstAttribute="bottom" secondItem="TrX-pv-42A" secondAttribute="bottom" constant="30" id="sze-Ho-d39"/>
+                                            <constraint firstItem="TrX-pv-42A" firstAttribute="top" secondItem="pdp-wD-ocj" secondAttribute="top" constant="30" id="uWo-lk-ndA"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="pdp-wD-ocj" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="leading" constant="30" id="5wj-Sl-isK"/>
+                                    <constraint firstAttribute="trailing" secondItem="pdp-wD-ocj" secondAttribute="trailing" constant="30" id="NIP-GR-zaV"/>
                                     <constraint firstAttribute="trailing" secondItem="OSd-zS-gaL" secondAttribute="trailing" constant="20" symbolic="YES" id="Uwc-Yv-Aol"/>
                                     <constraint firstItem="OSd-zS-gaL" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="leading" constant="30" id="eFg-jp-5PB"/>
                                     <constraint firstItem="OSd-zS-gaL" firstAttribute="top" secondItem="EwD-CN-wCz" secondAttribute="top" constant="30" id="eoc-P3-7bE"/>
+                                    <constraint firstAttribute="bottom" secondItem="pdp-wD-ocj" secondAttribute="bottom" constant="30" id="r3E-ka-Qms"/>
+                                    <constraint firstItem="pdp-wD-ocj" firstAttribute="top" secondItem="OSd-zS-gaL" secondAttribute="bottom" constant="30" id="ys8-ud-i1b"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gKB-uG-z7U">
@@ -133,6 +155,8 @@
                     </view>
                     <connections>
                         <outlet property="competitorListTitleLabel" destination="6n7-Ow-OhI" id="HGz-iV-zTE"/>
+                        <outlet property="countdownContainerView" destination="pdp-wD-ocj" id="v24-id-SfB"/>
+                        <outlet property="countdownLabel" destination="TrX-pv-42A" id="zbM-CF-8hK"/>
                         <outlet property="werewolfCompetitorListTableView" destination="rR8-2o-VvO" id="RYx-ex-1ro"/>
                     </connections>
                 </viewController>

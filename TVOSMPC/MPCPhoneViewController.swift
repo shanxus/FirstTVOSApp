@@ -197,6 +197,16 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
         alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)
     }
+    
+    func didWaitForVote() {
+        let alertController = UIAlertController(title: "投票", message: "請點擊號碼來投票兇手", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] (_) in
+            self.viewModel?.beginVoting()
+        }
+        
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
 }
 
 class NumberCollectionViewCell: UICollectionViewCell {

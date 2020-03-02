@@ -21,6 +21,9 @@ protocol WerewolfServiceDelegate: class {
     func didWaitForecasterToCheck(characters: [WerewolfCharacter])
     
     func dayDidBreak()
+    
+    func shouldStartCountdownForVoting()
+    func didWaitForVote()
 }
 
 class WerewolfService: NSObject {
@@ -55,6 +58,8 @@ class WerewolfService: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(handleGotWitchVictim(_:)), name: NSNotification.Name.didGetWitchVictim, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleGotForecasterCheckedTarget(_:)), name: NSNotification.Name.didGetForecasterCheckedTarget, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleVoteResult(_:)), name: NSNotification.Name.didGetVoteResult, object: nil)
     }
     
     func startGame() {
@@ -207,6 +212,32 @@ class WerewolfService: NSObject {
         startNextFlow(forceToIncreaseStage: false)
     }
     
+    @objc
+    private func handleVoteResult(_ notification: NSNotification) {
+        guard let userInfo = notification.userInfo as? [String : Any], let result = userInfo[TVMPCService.voteResultKey] as? TVMPCService.voteResult else { return }
+        
+        print("user info: \(userInfo)")
+        switch result {
+        case .divorce(let winner):  // set killed for player.
+            let number = winner.0
+            
+            let firstIndex = characters.firstIndex {
+                $0.number == number
+            }
+            
+            guard let killedIndex = firstIndex else { return }
+            
+            characters[killedIndex].setKilled(at: currentStage)
+            
+            // start next round.
+            setRoundEnded()
+            
+        case .tie(_):  // revote.
+            
+            startNextFlow(forceToIncreaseStage: false)
+        }
+    }
+    
     func startNextFlow(forceToIncreaseStage: Bool) {
         
         if forceToIncreaseStage {
@@ -310,7 +341,33 @@ class WerewolfService: NSObject {
             
         } else if currentStage == WerewolfStage.countdownForVoting.rawValue {
             print("[stage to WerewolfStage.countdownForVoting]")
+            
+            let stageScript = WerewolfStage.countdownForVoting.getScript()
+            speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.vote.rawValue {
+            
+            let stageScript = WerewolfStage.vote.getScript()
+            speech(for: stageScript)
+            
+        } else if currentStage == WerewolfStage.roundEnded.rawValue {
+            
+            let stageScript = WerewolfStage.roundEnded.getScript()
+            speech(for: stageScript)
+            
         }
+    }
+    
+    func setRoundEnded() {
+        currentStage += 1
+        round += 1
+        
+        for i in 0..<characters.count {
+            characters[i].currentRound = round
+        }
+    
+        startNextFlow(forceToIncreaseStage: false)
+        
     }
 }
 
@@ -423,6 +480,24 @@ extension WerewolfService: AVSpeechSynthesizerDelegate {
             DispatchQueue.main.async {
                 self.delegate?.dayDidBreak()
             }
+            
+        } else if currentStage == WerewolfStage.countdownForVoting.rawValue {
+            
+            currentStage += 1
+            DispatchQueue.main.async {
+                self.delegate?.shouldStartCountdownForVoting()
+            }
+        } else if currentStage == WerewolfStage.vote.rawValue {
+            
+            // Not increase the current stage here. It depends on the vote result to decide continuing to the next stage or not .
+            
+            delegate?.didWaitForVote()
+            
+        } else if currentStage == WerewolfStage.roundEnded.rawValue {
+            
+            currentStage = -1
+            delegate?.shouldUpdateCharacters(characters: self.characters)
+            
         }
     }
 }

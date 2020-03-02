@@ -12,6 +12,12 @@ protocol WerewolfDashboardViewModelDelegate: class {
     func dataSourceDidUpdate()
     
     func targetCompetitorNumberDidChange()
+    
+    func willStartCountingDownToVote()
+    func didUpdateCountingDownValue(as newValue: String)
+    func didEndCountingDownToVote()
+    
+    func didGetVoteResult(result: [(Int, Int)])
 }
 
 class WerewolfDashboardViewModel: NSObject {
@@ -20,6 +26,9 @@ class WerewolfDashboardViewModel: NSObject {
     private var tvMPCService: TVMPCService?
     
     private var werewolfService: WerewolfService?
+    
+    private var countdownTime: Int = 10
+    private var timerForCountingDownToVote: Timer?
     
     override init() {
         super.init()
@@ -68,6 +77,40 @@ class WerewolfDashboardViewModel: NSObject {
     
     func targetCompetitorNumber() -> Int {
         return werewolfService?.gameMode.getPeopleCount() ?? -1
+    }
+    
+    private func setupTimerForCountingDownToVote() {
+        timerForCountingDownToVote = Timer(timeInterval: 1, target: self, selector: #selector(countdownToVoteAction), userInfo: nil, repeats: true)
+        let runLoop = RunLoop.main
+        runLoop.add(timerForCountingDownToVote!, forMode: .common)
+    }
+    
+    private func clearTimerAndPrepareToVote() {
+        timerForCountingDownToVote?.invalidate()
+        timerForCountingDownToVote = nil
+        countdownTime = 10
+        
+        // Notify to vote.
+    }
+    
+    @objc
+    private func countdownToVoteAction() {
+        print("countdownToVoteAction, countdownTime: \(countdownTime)")
+        if countdownTime == 0 {
+            
+            DispatchQueue.main.async {
+                self.delegate?.didEndCountingDownToVote()
+                self.clearTimerAndPrepareToVote()
+            }
+            
+            werewolfService?.startNextFlow(forceToIncreaseStage: false)
+            
+        } else {
+            countdownTime -= 1
+            DispatchQueue.main.async {
+                self.delegate?.didUpdateCountingDownValue(as: "\(self.countdownTime)")
+            }
+        }
     }
 }
 
@@ -122,5 +165,29 @@ extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
     
     func dayDidBreak() {
         tvMPCService?.notifyDaybreak()
+    }
+    
+    func shouldStartCountdownForVoting() {
+        DispatchQueue.main.async {
+            self.delegate?.willStartCountingDownToVote()
+            self.setupTimerForCountingDownToVote()
+        }
+    }
+    
+    func didWaitForVote() {
+        tvMPCService?.notifyToVote()
+    }
+    
+    func didGetVoteResult(result: TVMPCService.voteResult) {
+        switch result {
+        case .divorce(let winner):
+            DispatchQueue.main.async {
+                self.delegate?.didGetVoteResult(result: [winner])
+            }
+        case .tie(let candidates):
+            DispatchQueue.main.async {
+                self.delegate?.didGetVoteResult(result: candidates)
+            }
+        }
     }
 }
