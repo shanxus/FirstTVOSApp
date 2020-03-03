@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum WerewolfStage: Int, CaseIterable {
     case preparingStage         = -1
@@ -37,7 +38,8 @@ enum WerewolfStage: Int, CaseIterable {
     
     // Wait everyone to vote.
     case vote                   = 17
-    case roundEnded             = 18
+    case checkGameOver          = 18
+    case roundEnded             = 19
     
     func getScript() -> String {
         switch self {
@@ -74,9 +76,11 @@ enum WerewolfStage: Int, CaseIterable {
         case .everyoneOpensEyes:
             return "天亮了"
         case .countdownForVoting:
-            return "討論一分鐘後投票"
+            return "討論一分鐘"
         case .vote:
             return "請在手機投票兇手"
+        case .checkGameOver:
+            return "確認獲勝條件中"
         case .roundEnded:
             return "回合結束"
         default:
@@ -112,12 +116,13 @@ enum WerewolfGameMode {
 }
 
 enum WerewolfSuperpower: String, Codable {
-    case none   // for villager.
-    case killPeople // for werewolf and witch.
-    case savePeople // for witch.
-    case checkTitleWithoutSideEffect // for forecaster.
-    case oneShot    // for hunter.
-    case checkTitleWithSideEffect   // for knight.
+    case none                           // for villager.
+    case killPeople                     // for werewolf.
+    case poisonPeople                   // for witch.
+    case savePeople                     // for witch.
+    case checkTitleWithoutSideEffect    // for forecaster.
+    case oneShot                        // for hunter.
+    case checkTitleWithSideEffect       // for knight.
 }
 
 enum WerewolfSpecies {
@@ -159,7 +164,7 @@ enum WerewolfSpecies {
         case .villager(_):
             return [.none]
         case .witch:
-            return [.savePeople, .killPeople]
+            return [.savePeople, .poisonPeople]
         case .forecaster:
             return [.checkTitleWithoutSideEffect]
         case .hunter:
@@ -342,6 +347,66 @@ struct WerewolfCharacter: Codable {
         return species.rawValue.0 == 5
     }
     
+    // For witch.
+    func isAbleToSave() -> Bool {
+        if isWitch() && superpowers.contains(.savePeople) {
+            
+            if isAlive {
+                return true
+            } else {
+                guard let killedRound = killedRound else { fatalError("Error in isAbleToSave") }
+                return killedRound == currentRound
+            }
+            
+        } else {
+            return false
+        }
+    }
+    
+    // For witch.
+    func isAbleToPoison() -> Bool {
+        if isWitch() && superpowers.contains(.poisonPeople) {
+            
+            if isAlive {
+                return true
+            } else {
+                guard let killedRound = killedRound else { fatalError("Error in isAbleToSave") }
+                return killedRound == currentRound
+            }
+            
+        } else {
+            return false
+        }
+    }
+    
+    // For forecaster.
+    func isAbleToForecast() -> Bool {
+        if isForecaster() {
+            
+            if isAlive {
+                return true
+            } else {
+                guard let killedRound = killedRound else { fatalError("Error in isAbleToForecast") }
+                return killedRound == currentRound
+            }
+            
+        } else {
+            return false
+        }
+    }
+    
+    func isMe() -> Bool {
+        return deviceName == UIDevice.current.name
+    }
+    
+    func isAbleToVote() -> Bool {
+        return isAlive
+    }
+    
+    func canBeKilledByWerewolf() -> Bool {
+        return isAlive
+    }
+    
     func canBeSavedByWitch() -> Bool {
         if isAlive {
             return false
@@ -364,6 +429,10 @@ struct WerewolfCharacter: Codable {
         }
     }
     
+    func getIndexFromNumber() -> Int {
+        return number - 1
+    }
+    
     mutating func setKilled(at round: Int) {
         self.isAlive = false
         self.killedRound = round
@@ -380,5 +449,22 @@ struct WerewolfCharacter: Codable {
                 $0 == superpower
             }
         }
+    }
+}
+
+extension WerewolfCharacter: CustomStringConvertible {
+    var description: String {
+        return
+        """
+        =====
+        species: \(species.getTitle())
+        number: \(number)
+        superpower: \(superpowers)
+        isAlive: \(isAlive)
+        killedRound: \(killedRound)
+        currentRound: \(currentRound)
+        isExposed: \(isIdentityExposed)
+        =====
+        """
     }
 }

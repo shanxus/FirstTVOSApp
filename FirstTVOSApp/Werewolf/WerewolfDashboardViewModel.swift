@@ -18,6 +18,7 @@ protocol WerewolfDashboardViewModelDelegate: class {
     func didEndCountingDownToVote()
     
     func didGetVoteResult(result: [(Int, Int)])
+    func gameDidOver(doesGoodSideWin: Bool)
 }
 
 class WerewolfDashboardViewModel: NSObject {
@@ -40,6 +41,8 @@ class WerewolfDashboardViewModel: NSObject {
     func setGameMode(as mode: WerewolfGameMode) {
         werewolfService = WerewolfService(mode: mode)
         werewolfService?.delegate = self
+        
+        tvMPCService?.dataSource = werewolfService
         
         DispatchQueue.main.async {
             self.delegate?.targetCompetitorNumberDidChange()
@@ -95,7 +98,7 @@ class WerewolfDashboardViewModel: NSObject {
     
     @objc
     private func countdownToVoteAction() {
-        print("countdownToVoteAction, countdownTime: \(countdownTime)")
+        
         if countdownTime == 0 {
             
             DispatchQueue.main.async {
@@ -123,6 +126,19 @@ extension WerewolfDashboardViewModel: TVMPCServiceDelegate {
         
         startGameFlowIfNeeded()
     }
+    
+    func didGetVoteResult(result: TVMPCService.voteResult) {
+        switch result {
+        case .divorce(let winner):
+            DispatchQueue.main.async {
+                self.delegate?.didGetVoteResult(result: [winner])
+            }
+        case .tie(let candidates):
+            DispatchQueue.main.async {
+                self.delegate?.didGetVoteResult(result: candidates)
+            }
+        }
+    }
 }
 
 extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
@@ -137,16 +153,14 @@ extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
         let peerDisplayNames = tvMPCService.connectedPeerIDs.compactMap { $0.displayName }
         
         for (index, name) in peerDisplayNames.enumerated() {
-
-            characters[index].number = index + 1
             characters[index].deviceName = name
         }
         
         tvMPCService.sendCharacterInfoToClients(characters)
     }
     
-    func didWaitForWerewolfToDecideNextVictim(currentVictimNumbers: [Int]) {
-        tvMPCService?.notifyWerewolfToKill(currentVictimNumbers: currentVictimNumbers)
+    func didWaitForWerewolfToDecideNextVictim() {
+        tvMPCService?.notifyWerewolfToKill()
     }
     
     func didWaitForWitchToSave() {
@@ -178,16 +192,9 @@ extension WerewolfDashboardViewModel: WerewolfServiceDelegate {
         tvMPCService?.notifyToVote()
     }
     
-    func didGetVoteResult(result: TVMPCService.voteResult) {
-        switch result {
-        case .divorce(let winner):
-            DispatchQueue.main.async {
-                self.delegate?.didGetVoteResult(result: [winner])
-            }
-        case .tie(let candidates):
-            DispatchQueue.main.async {
-                self.delegate?.didGetVoteResult(result: candidates)
-            }
+    func gameDidOver(doesGoodSideWin: Bool) {
+        DispatchQueue.main.async {
+            self.delegate?.gameDidOver(doesGoodSideWin: doesGoodSideWin)
         }
     }
 }

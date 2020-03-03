@@ -104,14 +104,50 @@
                                             <constraint firstItem="TrX-pv-42A" firstAttribute="top" secondItem="pdp-wD-ocj" secondAttribute="top" constant="30" id="uWo-lk-ndA"/>
                                         </constraints>
                                     </view>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KhZ-jz-oYP">
+                                        <rect key="frame" x="30" y="100" width="1194" height="680"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__ 勝利！" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.40000000000000002" translatesAutoresizingMaskIntoConstraints="NO" id="Xf9-SU-luH">
+                                                <rect key="frame" x="30" y="50" width="1134" height="100"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="rsW-RW-V74"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="38"/>
+                                                <color key="textColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d3q-lT-ZqP">
+                                                <rect key="frame" x="447" y="394" width="300" height="86"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="300" id="1oA-U1-Zap"/>
+                                                    <constraint firstAttribute="height" constant="86" id="p3x-ab-s5G"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="30"/>
+                                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
+                                                <state key="normal" title="再來一局"/>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="Xf9-SU-luH" firstAttribute="leading" secondItem="KhZ-jz-oYP" secondAttribute="leading" constant="30" id="IVq-w4-tEB"/>
+                                            <constraint firstItem="d3q-lT-ZqP" firstAttribute="centerX" secondItem="KhZ-jz-oYP" secondAttribute="centerX" id="Qfc-9N-7Kd"/>
+                                            <constraint firstAttribute="trailing" secondItem="Xf9-SU-luH" secondAttribute="trailing" constant="30" id="ath-2u-Qwh"/>
+                                            <constraint firstAttribute="bottom" secondItem="d3q-lT-ZqP" secondAttribute="bottom" constant="200" id="h2T-1B-U7s"/>
+                                            <constraint firstItem="Xf9-SU-luH" firstAttribute="top" secondItem="KhZ-jz-oYP" secondAttribute="top" constant="50" id="r21-fN-prf"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="pdp-wD-ocj" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="leading" constant="30" id="5wj-Sl-isK"/>
+                                    <constraint firstItem="KhZ-jz-oYP" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="leading" constant="30" id="MTL-UD-ffl"/>
                                     <constraint firstAttribute="trailing" secondItem="pdp-wD-ocj" secondAttribute="trailing" constant="30" id="NIP-GR-zaV"/>
+                                    <constraint firstItem="KhZ-jz-oYP" firstAttribute="top" secondItem="OSd-zS-gaL" secondAttribute="bottom" constant="30" id="QPb-kG-w6F"/>
                                     <constraint firstAttribute="trailing" secondItem="OSd-zS-gaL" secondAttribute="trailing" constant="20" symbolic="YES" id="Uwc-Yv-Aol"/>
+                                    <constraint firstAttribute="trailing" secondItem="KhZ-jz-oYP" secondAttribute="trailing" constant="30" id="aZ6-Tm-Qdn"/>
                                     <constraint firstItem="OSd-zS-gaL" firstAttribute="leading" secondItem="EwD-CN-wCz" secondAttribute="leading" constant="30" id="eFg-jp-5PB"/>
                                     <constraint firstItem="OSd-zS-gaL" firstAttribute="top" secondItem="EwD-CN-wCz" secondAttribute="top" constant="30" id="eoc-P3-7bE"/>
+                                    <constraint firstAttribute="bottom" secondItem="KhZ-jz-oYP" secondAttribute="bottom" constant="30" id="hcD-3U-2T5"/>
                                     <constraint firstAttribute="bottom" secondItem="pdp-wD-ocj" secondAttribute="bottom" constant="30" id="r3E-ka-Qms"/>
                                     <constraint firstItem="pdp-wD-ocj" firstAttribute="top" secondItem="OSd-zS-gaL" secondAttribute="bottom" constant="30" id="ys8-ud-i1b"/>
                                 </constraints>
@@ -157,6 +193,9 @@
                         <outlet property="competitorListTitleLabel" destination="6n7-Ow-OhI" id="HGz-iV-zTE"/>
                         <outlet property="countdownContainerView" destination="pdp-wD-ocj" id="v24-id-SfB"/>
                         <outlet property="countdownLabel" destination="TrX-pv-42A" id="zbM-CF-8hK"/>
+                        <outlet property="rematchButton" destination="d3q-lT-ZqP" id="VxM-ns-x0x"/>
+                        <outlet property="victoryContainerView" destination="KhZ-jz-oYP" id="PRc-HI-7sn"/>
+                        <outlet property="victoryTitleLabel" destination="Xf9-SU-luH" id="Z3f-Ar-D69"/>
                         <outlet property="werewolfCompetitorListTableView" destination="rR8-2o-VvO" id="RYx-ex-1ro"/>
                     </connections>
                 </viewController>

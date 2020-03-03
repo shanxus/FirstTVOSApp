@@ -40,17 +40,16 @@ class MPCPhoneViewController: UIViewController {
         disableAllNumbers()
     }
     
-    func enableAllNumbers() {
-        disabledItems.removeAll()
-        numberCollectionView.reloadData()
-    }
-    
-    func disableAllNumbers() {
+    private func disableAllNumbers() {
         disabledItems.removeAll()
         for i in 0..<9 {
             disabledItems.append(i)
         }
         numberCollectionView.reloadData()
+    }
+    
+    private func finishSelection() {
+        disableAllNumbers()
     }
 }
 
@@ -101,7 +100,11 @@ extension MPCPhoneViewController: UICollectionViewDelegateFlowLayout {
 extension MPCPhoneViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("did select: \(indexPath)")
-        viewModel?.didSelectNumber(number: indexPath.item)
+        
+        if !disabledItems.contains(indexPath.item) {
+            viewModel?.didSelectNumber(number: indexPath.item)
+            finishSelection()
+        }
     }
 }
 
@@ -109,6 +112,7 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
     func didUpdateCharacter(as title: String) {
                 
         yourCharacterLabel.text = String(format: "Your character is %@", title)
+        numberCollectionView.reloadData()
     }
     
     func shouldDisableNumbers(range: MPCPhoneViewModel.effectNumberRange) {
@@ -188,8 +192,24 @@ extension MPCPhoneViewController: MPCPhoneViewModelDelegate {
         present(alertController, animated: true, completion: nil)
     }
     
-    func dayDidBreak(victim title: String) {
-        let alertController = UIAlertController(title: "上一回合受害者", message: "受害者是：\(title)", preferredStyle: .alert)
+    func dayDidBreak(victims: MPCPhoneViewModel.VictimsAtRoundEnded) {
+        
+        var title = ""
+        var message = ""
+        
+        switch victims {
+        case .none:
+            title = ""
+            message = "上一回合無受害者"
+        case .others(let content):
+            title = "上一回合受害者"
+            message = content
+        case .me(let content):
+            title = ""
+            message = content
+        }
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] (_) in
             self.viewModel?.daybreakDoneAction()
         }

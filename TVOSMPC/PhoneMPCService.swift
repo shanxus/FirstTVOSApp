@@ -12,7 +12,7 @@ import MultipeerConnectivity
 protocol PhoneMPCServiceDelegate: class {
     func didUpdateCharacters(_ characters: [WerewolfCharacter])
     
-    func didReceiveWerewolfShouldKill(victimNumbers: [Int])
+    func didReceiveWerewolfShouldKill()
     func didReceiveWitchSavesOrNot()
     func didReceiveWitchKillsOrNot()
     
@@ -74,30 +74,22 @@ class PhoneMPCService: NSObject {
         if firstKey ==  TVMPCService.werewolfShouldKillKey {
             handleReceivingWerewolfShouldKill(with: dictionary)
         } else if firstKey == TVMPCService.witchSavesOrNotKey {
-            showLocalNotification(title: "Got witchSavesOrNotKey", subtitle: "", body: "")
             handleReceivingWitchSavesOrNot(with: dictionary)
         } else if firstKey == TVMPCService.witchKillsOrNotKey {
-            showLocalNotification(title: "Got witchKillsOrNotKey", subtitle: "", body: "")
             handleReceivingWitchKillsOrNot()
         } else if firstKey == TVMPCService.forecasterCanCheckKey {
-            showLocalNotification(title: "Got forecasterWillCheckKey", subtitle: "", body: "")
             handleReceivingForecasterCanCheck()
         } else if firstKey == TVMPCService.dayDidBreakKey {
-            showLocalNotification(title: "Day did break", subtitle: "", body: "")
             handleReceivingDayDidBreak()
         } else if firstKey == TVMPCService.playersCanVoteKey {
-            showLocalNotification(title: "Players can vote", subtitle: "", body: "")
             handlePlayerCanVote()
         }
     }
     
     private func handleReceivingWerewolfShouldKill(with dictionary: [String : Any]) {
         print("[handleReceivingWerewolfShouldKill]")
-        guard let victimNumbers = dictionary[TVMPCService.werewolfShouldKillKey] as? String else { return }
         
-        let victims = victimNumbers.components(separatedBy: ",").compactMap { Int($0) }
-        
-        delegate?.didReceiveWerewolfShouldKill(victimNumbers: victims)
+        delegate?.didReceiveWerewolfShouldKill()
     }
     
     private func handleReceivingWitchSavesOrNot(with dictionary: [String : Any]) {
@@ -148,8 +140,6 @@ class PhoneMPCService: NSObject {
         guard let lastPeer = lastPeerID else { return }
         
         send(data: data, to: [lastPeer])
-            
-        showLocalNotification(title: "Send killed target", subtitle: "", body: "")
     }
     
     func sendWitchSavesResult(witchSaves: Bool) {
@@ -162,7 +152,7 @@ class PhoneMPCService: NSObject {
         send(data: data, to: [lastPeer])
     }
     
-    func sendWitchKilledTarget(targetNumber: Int) {
+    func sendWitchKilledTarget(targetNumber: Int?) {
         let message = [TVMPCService.witchKillTargetKey : targetNumber]
         
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else { return }
@@ -218,11 +208,10 @@ extension PhoneMPCService: MCSessionDelegate {
         lastPeerID = peerID
         
         if let characters = try? JSONDecoder().decode([WerewolfCharacter].self, from: data) {
-            showLocalNotification(title: "Did receive characters", subtitle: "", body: "")
             
             // Update character and send shake hand message every time the phone side received the character information.
-            sendHandShakeMessage()
             delegate?.didUpdateCharacters(characters)
+            sendHandShakeMessage()
             
         } else {
             unwrapReceivedDataAsDictionary(data)
@@ -247,7 +236,6 @@ extension PhoneMPCService: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         
         print("didReceiveInvitationFromPeer")
-        showLocalNotification(title: "didReceiveInvitationFromPeer", subtitle: "", body: "")
         invitationHandler(true, mcSession)
     }
     

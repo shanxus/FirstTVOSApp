@@ -15,6 +15,9 @@ class WerewolfDashboardViewController: UIViewController {
     @IBOutlet weak var werewolfCompetitorListTableView: UITableView!
     @IBOutlet weak var countdownContainerView: UIView!
     @IBOutlet weak var countdownLabel: UILabel!
+    @IBOutlet weak var victoryContainerView: UIView!
+    @IBOutlet weak var victoryTitleLabel: UILabel!
+    @IBOutlet weak var rematchButton: UIButton!
     
     private var viewModel: WerewolfDashboardViewModel?
     
@@ -117,6 +120,12 @@ extension WerewolfDashboardViewController: WerewolfDashboardViewModelDelegate {
             countdownLabel.text = "\(joinedNumbers) 玩家票數相同！\n重新投票！"
         }
         
+    }
+    
+    func gameDidOver(doesGoodSideWin: Bool) {
+        let displayingText = doesGoodSideWin ? "好人勝利！" : "壞人勝利！"
+        victoryTitleLabel.text = displayingText
+        victoryContainerView.isHidden = false
     }
 }
 

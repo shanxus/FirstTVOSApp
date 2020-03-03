@@ -22,7 +22,7 @@ protocol MPCPhoneViewModelDelegate: class {
     
     func didGetForecastedResult(with title: String)
     
-    func dayDidBreak(victim title: String)
+    func dayDidBreak(victims: MPCPhoneViewModel.VictimsAtRoundEnded)
     
     func didWaitForVote()
 }
@@ -49,8 +49,6 @@ class MPCPhoneViewModel: NSObject {
     }
     
     private(set) var numberOfPlayers: Int? = 6
-    
-    private(set) var victimNumbers: [Int] = []
     
     private var lastExposedIdentityNumber: Int?
     
@@ -113,7 +111,7 @@ class MPCPhoneViewModel: NSObject {
             mode = .normalFlow
         }
     }
-    
+                
     func witchSavesVictimAction(witchSaves: Bool) {
         guard let character = findSelfCharacter() else { return }
         if character.isWitch() {
@@ -125,7 +123,7 @@ class MPCPhoneViewModel: NSObject {
     }
     
     func witchNotKill() {
-        
+        mpcService?.sendWitchKilledTarget(targetNumber: nil)
     }
     
     func forecasterDoneAction() {
@@ -148,6 +146,12 @@ extension MPCPhoneViewModel {
         case all
         case part(numbers: [Int])
     }
+    
+    enum VictimsAtRoundEnded {
+        case none
+        case others(content: String)
+        case me(content: String)
+    }
 }
 
 extension MPCPhoneViewModel: PhoneMPCServiceDelegate {
@@ -156,13 +160,15 @@ extension MPCPhoneViewModel: PhoneMPCServiceDelegate {
         self.characters = characters
     }
     
-    func didReceiveWerewolfShouldKill(victimNumbers: [Int]) {
+    func didReceiveWerewolfShouldKill() {
         
         guard let character = findSelfCharacter() else { return }
         
         if character.isWerewolf() {
+            let numbersThatCanBeKilledByWerewolf = characters.filter { !$0.canBeKilledByWerewolf() }.map { $0.getIndexFromNumber() }
+            
             DispatchQueue.main.async {
-                self.delegate?.shouldDisableNumbers(range: .part(numbers: victimNumbers))
+                self.delegate?.shouldDisableNumbers(range: .part(numbers: numbersThatCanBeKilledByWerewolf))
             }
         } else {
             DispatchQueue.main.async {
@@ -172,68 +178,125 @@ extension MPCPhoneViewModel: PhoneMPCServiceDelegate {
     }
     
     func didReceiveWitchSavesOrNot() {
-        guard let character = findSelfCharacter(), character.isWitch() else { return }
+        guard let character = findSelfCharacter() else { return }
         
-        let firstCharacterThatCanBeSaved = characters.filter { $0.canBeSavedByWitch() }.first
-        
-        guard let characterThatCanBeSaved = firstCharacterThatCanBeSaved else { return }
-        
-        let victimNumber = characterThatCanBeSaved.number
-        
-        DispatchQueue.main.async {
-            self.delegate?.shouldShowWitchSaveAlert(number: victimNumber)
+        if character.isWitch() {
+            let firstCharacterThatCanBeSaved = characters.filter { $0.canBeSavedByWitch() }.first
+            
+            guard let characterThatCanBeSaved = firstCharacterThatCanBeSaved else { return }
+            
+            let victimNumber = characterThatCanBeSaved.number
+            
+            DispatchQueue.main.async {
+                self.delegate?.shouldShowWitchSaveAlert(number: victimNumber)
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .all)
+            }
         }
     }
     
     func didReceiveWitchKillsOrNot() {
         
-        guard let character = findSelfCharacter(), character.isWitch() else { return }
+        guard let character = findSelfCharacter() else { return }
         
-        let charactersThatCanNotBeKilledByWitch = characters.filter { !$0.canBeKilledByWitch() }.map { $0.number - 1 }
-        
-        DispatchQueue.main.async {
-            self.delegate?.shouldDisableNumbers(range: .part(numbers: charactersThatCanNotBeKilledByWitch))
-            self.delegate?.shouldShowWitchKillsOrNotAlert()
+        if character.isWitch() {
+            let charactersThatCanNotBeKilledByWitch = characters.filter { !$0.canBeKilledByWitch() }.map { $0.number - 1 }
+            
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .part(numbers: charactersThatCanNotBeKilledByWitch))
+                self.delegate?.shouldShowWitchKillsOrNotAlert()
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .all)
+            }
         }
     }
     
     func didReceiveForecasterCanCheck() {
         
-        guard let character = findSelfCharacter(), character.isForecaster() else { return }
+        guard let character = findSelfCharacter() else { return }
         
-        let charactersThatCanNotBeForecasted = characters.filter { !$0.canBeForecasted() }.map { $0.number - 1 }
-        
-        DispatchQueue.main.async {
-            self.delegate?.shouldDisableNumbers(range: .part(numbers: charactersThatCanNotBeForecasted))
-            self.delegate?.shouldShowForecasterCanCheckAlert()
+        if character.isForecaster() {
+            let charactersThatCanNotBeForecasted = characters.filter { !$0.canBeForecasted() }.map { $0.number - 1 }
+            
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .part(numbers: charactersThatCanNotBeForecasted))
+                self.delegate?.shouldShowForecasterCanCheckAlert()
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .all)
+            }
         }
     }
     
     func didReceiveDayDidBreak() {
         
-        guard let currentRound = characters.first?.currentRound else { return }
+        let isMeAbleToVote = ( characters.filter { $0.isMe() && $0.isAbleToVote() }.count != 0 )
         
-        let firstVictim = characters.filter {
-            guard let killedRound = $0.killedRound else { return false }
-            return killedRound == currentRound
-        }.first
-        
-        guard let victim = firstVictim else { return }
-        
-        let deadCharacterNumbers = characters.filter { !$0.isAlive }.map { $0.number - 1 }
-        
-        DispatchQueue.main.async {
-            self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
-            self.delegate?.dayDidBreak(victim: victim.species.getTitle())
+        if isMeAbleToVote {
+            
+            guard let currentRound = characters.first?.currentRound else { return }
+            
+            let victims = characters.filter {
+                guard let killedRound = $0.killedRound else { return false }
+                return killedRound == currentRound
+            }
+            
+            let victimTitles = victims.map { "\($0.number)號(\($0.species.getGroup()))" }
+            
+            let content = "受害者是：" + victimTitles.joined(separator: "、")
+            
+            let deadContent = (victims.count == 0 ) ? VictimsAtRoundEnded.none : VictimsAtRoundEnded.others(content: content)
+
+            let deadCharacterNumbers = characters.filter { !$0.isAlive }.map { $0.number - 1 }
+
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
+                self.delegate?.dayDidBreak(victims: deadContent)
+            }
+            
+        } else { // The player was killed in this round so show a message to let the player know.
+            
+            // If that player was not killed in this round, should not show the killed message.
+            let me = characters.filter { $0.isMe() }.first!
+            
+            guard let killRound = me.killedRound else { fatalError("Error in didReceiveDayDidBreak") }
+            
+            if killRound == me.currentRound {
+                
+                let deadContent = "你被殺了🥰🥰"
+                DispatchQueue.main.async {
+                    self.delegate?.shouldDisableNumbers(range: .all)
+                    self.delegate?.dayDidBreak(victims: .me(content: deadContent))
+                }
+                
+            } else {
+                // Do nothing.
+                mpcService?.sendHandShakeMessage()
+            }
         }
     }
     
     func didWaitForPlayerToVote() {
-        let deadCharacterNumbers = characters.filter { !$0.isAlive }.map { $0.number - 1 }
+        let isMeAbleToVote = ( characters.filter { $0.isMe() && $0.isAbleToVote() }.count != 0 )
         
-        DispatchQueue.main.async {
-            self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
-            self.delegate?.didWaitForVote()
+        if isMeAbleToVote {
+            
+            let deadCharacterNumbers = characters.filter { !$0.isAlive }.map { $0.number - 1 }
+            
+            DispatchQueue.main.async {
+                self.delegate?.shouldDisableNumbers(range: .part(numbers: deadCharacterNumbers))
+                self.delegate?.didWaitForVote()
+            }
+            
+        } else {    // Dead players can not vote.
+            
+            // do nothing.
+            
         }
     }
 }

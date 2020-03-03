@@ -15,6 +15,12 @@ protocol TVMPCServiceDelegate: class {
     func didGetVoteResult(result: TVMPCService.voteResult)
 }
 
+protocol TVMPCServiceDataSource: class {
+    func aliveMemberCount() -> Int
+    
+    func connectedAliveMemberCount(connectedPeerIDs: [String]) -> Int
+}
+
 class TVMPCService: NSObject {
     
     var peerID: MCPeerID!
@@ -22,6 +28,7 @@ class TVMPCService: NSObject {
     var mcBrowser: MCNearbyServiceBrowser!
     
     weak var delegate: TVMPCServiceDelegate?
+    weak var dataSource: TVMPCServiceDataSource?
     
     private(set) var connectedPeerIDs: [MCPeerID] = [] {
         didSet {
@@ -58,12 +65,14 @@ class TVMPCService: NSObject {
     
     private func handleHandShake(for displayName: String) {
         if !handshakeMessages.contains(displayName) {
+            print("append: \(displayName) to handshake messages")
             handshakeMessages.append(displayName)
         }
         
         if handshakeMessages.count == connectedPeerIDs.count {
             handshakeMessages.removeAll()
             
+            print("Post for handshake")
             NotificationCenter.default.post(name: NSNotification.Name.MPCHandshake, object: nil, userInfo: nil)
         }
     }
@@ -88,7 +97,7 @@ class TVMPCService: NSObject {
         NotificationCenter.default.post(name: NSNotification.Name.didGetWitchSaveResult, object: nil, userInfo: nil)
     }
     
-    private func handleWitchKills(targetNumber: Int) {
+    private func handleWitchKills(targetNumber: Int?) {
         
         let userInfo = [TVMPCService.didGetWitchVictimKey : targetNumber]
         NotificationCenter.default.post(name: NSNotification.Name.didGetWitchVictim, object: nil, userInfo: userInfo)
@@ -101,7 +110,7 @@ class TVMPCService: NSObject {
     }
     
     private func handleVoteResults() {
-        
+        print("[handleVoteResults]")
         // target : count
         var voteDictionary: [Int : Int] = [:]
         
@@ -112,6 +121,9 @@ class TVMPCService: NSObject {
                 voteDictionary[$0] = 1
             }
         }
+        
+        // Clear to make it can be counted again.
+        voteResults.removeAll()
         
         let sortedDictionary = voteDictionary.sorted {
             return $0.1 > $1.1
@@ -181,10 +193,7 @@ class TVMPCService: NSObject {
         } else if firstKey == TVMPCService.witchKillTargetKey {
             print("got witchKillTargetKey")
             
-            guard let targetNumber = dictionary[TVMPCService.witchKillTargetKey] as? Int else {
-                print("Failed to unwrap killed target")
-                return
-            }
+            let targetNumber = dictionary[TVMPCService.witchKillTargetKey] as? Int
             
             handleWitchKills(targetNumber: targetNumber)
             
@@ -207,17 +216,23 @@ class TVMPCService: NSObject {
             }
             
             voteResults.append(targetNumber)
-            if voteResults.count == connectedPeerIDs.count {
+            
+            let peerIDs = connectedPeerIDs.map { $0.displayName }
+            
+            guard let aliveMemberCount = dataSource?.connectedAliveMemberCount(connectedPeerIDs: peerIDs) else {
+                fatalError("There is no data source in unwrapReceivedData")
+            }
+            
+            if voteResults.count == aliveMemberCount {
                 handleVoteResults()
             }
         }
     }
     
-    func notifyWerewolfToKill(currentVictimNumbers: [Int]) {
+    func notifyWerewolfToKill() {
         print("[notifyWerewolfToKill]")
-        let victimsString = currentVictimNumbers.map { String($0) }.joined(separator: ",")
-        
-        let message = [TVMPCService.werewolfShouldKillKey : victimsString]
+                
+        let message = [TVMPCService.werewolfShouldKillKey : TVMPCService.werewolfShouldKillKey]
             
         guard let data = try? JSONSerialization.data(withJSONObject: message, options: .prettyPrinted) else {
             print("failed to encode message as data.")
